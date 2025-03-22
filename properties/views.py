@@ -63,10 +63,9 @@ def create_property_request(request):
         if form.is_valid():
             prop_request = form.save(commit=False)
 
-            # ربط الطلب بحساب الأدمن دائمًا
-            admin_user = User.objects.filter(is_superuser=True).first()
-            if admin_user:
-                prop_request.user = admin_user
+            if request.user.is_authenticated:
+                # ربط الطلب بالمستخدم الحالي إن كان مسجلاً
+                prop_request.user = request.user
 
             prop_request.save()
             messages.success(request, "تم إرسال الطلب بنجاح ✅")
@@ -75,6 +74,7 @@ def create_property_request(request):
         form = PropertyRequestForm()
 
     return render(request, 'properties/request_form.html', {'form': form})
+
 
 
 

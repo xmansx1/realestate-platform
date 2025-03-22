@@ -1,15 +1,14 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% block title %}جميع الطلبات العقارية{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2 class="text-center mb-4">جميع الطلبات العقارية</h2>
-    <div class="d-flex justify-content-end mb-3">
-        <a href="{% url 'dashboard' %}" class="btn btn-dark">عودة للوحة التحكم</a>
-    </div>
+<div class="container mt-4">
+    <h2 class="text-center mb-4 fw-bold">جميع الطلبات العقارية</h2>
+
+    <a href="{% url 'dashboard' %}" class="btn btn-dark mb-3">عودة للوحة التحكم</a>
 
     <div class="table-responsive">
-        <table class="table table-bordered text-center align-middle table-striped">
+        <table class="table table-striped table-bordered text-center align-middle">
             <thead class="table-dark">
                 <tr>
                     <th>#</th>
@@ -21,36 +20,33 @@
                     <th>التفاصيل</th>
                     <th>المستخدم</th>
                     <th>عرض</th>
-                    {% if user.is_superuser %}
-                        <th>الإجراءات</th>
-                    {% endif %}
                 </tr>
             </thead>
             <tbody>
-                {% for request in requests %}
-                    <tr>
-                        <td>{{ forloop.counter }}</td>
-                        <td>{{ request.get_request_type_display }}</td>
-                        <td>{{ request.get_property_type_display }}</td>
-                        <td>{{ request.city }}</td>
-                        <td>{{ request.district }}</td>
-                        <td>{{ request.area }}</td>
-                        <td>{{ request.details|truncatechars:50 }}</td>
-                        <td>{{ request.user.username }}</td>
-                        <td>
-                            <a href="{% url 'request_detail' request.id %}" class="btn btn-sm btn-primary">عرض</a>
-                        </td>
-                        {% if user.is_superuser %}
-                            <td>
-                                <a href="{% url 'edit_request' request.id %}" class="btn btn-sm btn-warning">تعديل</a>
-                                <a href="{% url 'delete_request' request.id %}" class="btn btn-sm btn-danger">حذف</a>
-                            </td>
+                {% for request_obj in requests %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ request_obj.get_request_type_display }}</td>
+                    <td>{{ request_obj.get_property_type_display }}</td>
+                    <td>{{ request_obj.city }}</td>
+                    <td>{{ request_obj.district }}</td>
+                    <td>{{ request_obj.area }}</td>
+                    <td>{{ request_obj.details }}</td>
+                    <td>
+                        {% if request_obj.user %}
+                            {{ request_obj.user.username }}
+                        {% else %}
+                            {{ request_obj.full_name }}
                         {% endif %}
-                    </tr>
+                    </td>
+                    <td>
+                        <a href="{% url 'request_detail' request_obj.id %}" class="btn btn-sm btn-primary">عرض</a>
+                    </td>
+                </tr>
                 {% empty %}
-                    <tr>
-                        <td colspan="10" class="text-center">لا توجد طلبات عقارية حالياً.</td>
-                    </tr>
+                <tr>
+                    <td colspan="9" class="text-muted">لا توجد طلبات حالياً.</td>
+                </tr>
                 {% endfor %}
             </tbody>
         </table>
