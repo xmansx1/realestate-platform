@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block title %}نموذج طلب عقاري{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center mb-4">نموذج طلب عقاري</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">الاسم الكامل</label>
+                {{ form.full_name|add_class:"form-control" }}
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">رقم الهاتف</label>
+                {{ form.phone|add_class:"form-control" }}
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">نوع العقار</label>
+                {{ form.property_type|add_class:"form-select" }}
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">نوع الطلب</label>
+                {{ form.request_type|add_class:"form-select" }}
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">نوع المالك</label>
+                {{ form.owner_type|add_class:"form-select" }}
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">المدينة</label>
+                {{ form.city|add_class:"form-control" }}
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">الحي</label>
+                {{ form.district|add_class:"form-control" }}
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">المساحة (م²)</label>
+                {{ form.area|add_class:"form-control" }}
+            </div>
+
+            <div class="col-12">
+                <label class="form-label">تفاصيل إضافية</label>
+                {{ form.details|add_class:"form-control" }}
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between mt-4">
+            <a href="{% url 'home' %}" class="btn btn-secondary">العودة</a>
+            <button type="submit" class="btn btn-primary">إرسال الطلب</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

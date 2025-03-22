@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}طلباتي العقارية{% endblock %}
+
+{% block content %}
+<h3 class="mb-4">📌 طلباتي العقارية</h3>
+
+{% if requests %}
+<table class="table table-hover table-bordered text-center align-middle shadow-sm">
+    <thead class="table-dark">
+        <tr>
+            <th>نوع الطلب</th>
+            <th>نوع العقار</th>
+            <th>الاسم</th>
+            <th>رقم الهاتف</th>
+            <th>المدينة</th>
+            <th>الحي</th>
+            <th>المساحة</th>
+            <th>الإجراءات</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for r in requests %}
+        <tr>
+            <td>{{ r.get_request_type_display }}</td>
+            <td>{{ r.get_property_type_display }}</td>
+            <td>{{ r.full_name }}</td>
+            <td>{{ r.phone }}</td>
+            <td>{{ r.city }}</td>
+            <td>{{ r.district }}</td>
+            <td>{{ r.area }} م²</td>
+            <td>
+                <a href="{% url 'edit_request' r.id %}" class="btn btn-sm btn-warning">✏️ تعديل</a>
+                <a href="{% url 'delete_request' r.id %}" class="btn btn-sm btn-danger"
+                   onclick="return confirm('هل أنت متأكد من حذف هذا الطلب؟');">🗑️ حذف</a>
+                   
+            </td>
+        </tr>
+        
+        {% endfor %}
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary mb-3">🔙 الرجوع إلى لوحة التحكم</a>
+
+    </tbody>
+</table>
+{% else %}
+<div class="alert alert-info text-center">لا توجد طلبات حالياً.</div>
+{% endif %}
+{% endblock %}

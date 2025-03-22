@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block title %}جميع الطلبات العقارية{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">جميع الطلبات العقارية</h2>
+    <div class="d-flex justify-content-end mb-3">
+        <a href="{% url 'dashboard' %}" class="btn btn-dark">عودة للوحة التحكم</a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered text-center align-middle table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>نوع الطلب</th>
+                    <th>نوع العقار</th>
+                    <th>المدينة</th>
+                    <th>الحي</th>
+                    <th>المساحة (م²)</th>
+                    <th>التفاصيل</th>
+                    <th>المستخدم</th>
+                    <th>عرض</th>
+                    {% if user.is_superuser %}
+                        <th>الإجراءات</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for request in requests %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ request.get_request_type_display }}</td>
+                        <td>{{ request.get_property_type_display }}</td>
+                        <td>{{ request.city }}</td>
+                        <td>{{ request.district }}</td>
+                        <td>{{ request.area }}</td>
+                        <td>{{ request.details|truncatechars:50 }}</td>
+                        <td>{{ request.user.username }}</td>
+                        <td>
+                            <a href="{% url 'request_detail' request.id %}" class="btn btn-sm btn-primary">عرض</a>
+                        </td>
+                        {% if user.is_superuser %}
+                            <td>
+                                <a href="{% url 'edit_request' request.id %}" class="btn btn-sm btn-warning">تعديل</a>
+                                <a href="{% url 'delete_request' request.id %}" class="btn btn-sm btn-danger">حذف</a>
+                            </td>
+                        {% endif %}
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="10" class="text-center">لا توجد طلبات عقارية حالياً.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

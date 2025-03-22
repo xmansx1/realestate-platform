@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">تفاصيل الطلب العقاري</h2>
+
+    <div class="card p-4 shadow-sm">
+        <p><strong>اسم المستخدم:</strong> {{ request_obj.user.username }}</p>
+
+        <p><strong>الاسم الكامل:</strong> {{ request_obj.full_name }}</p>
+        <p><strong>رقم الهاتف:</strong> {{ request_obj.phone }}</p>
+        <p><strong>نوع العقار:</strong> {{ request_obj.property_type }}</p>
+        <p><strong>نوع الطلب:</strong> {{ request_obj.request_type }}</p>
+        <p><strong>نوع المالك:</strong> {{ request_obj.owner_type }}</p>
+        <p><strong>المدينة:</strong> {{ request_obj.city }}</p>
+        <p><strong>الحي:</strong> {{ request_obj.district }}</p>
+        <p><strong>المساحة:</strong> {{ request_obj.area }} م²</p>
+        <p><strong>تفاصيل إضافية:</strong><br>
+            {{ request_obj.details|linebreaksbr }}
+        </p>
+        
+    </div>
+
+    <div class="mt-4 text-center">
+        <a href="{% url 'property_requests' %}" class="btn btn-dark">العودة</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">تعديل الطلب العقاري</h2>
+    <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="id_full_name" class="form-label">الاسم الكامل</label>
+            {{ form.full_name }}
+        </div>
+        <div class="mb-3">
+            <label for="id_phone" class="form-label">رقم الهاتف</label>
+            {{ form.phone }}
+        </div>
+        <div class="mb-3">
+            <label for="id_property_type" class="form-label">نوع العقار</label>
+            {{ form.property_type }}
+        </div>
+        <div class="mb-3">
+            <label for="id_request_type" class="form-label">نوع الطلب</label>
+            {{ form.request_type }}
+        </div>
+        <div class="mb-3">
+            <label for="id_owner_type" class="form-label">نوع المالك</label>
+            {{ form.owner_type }}
+        </div>
+        <div class="mb-3">
+            <label for="id_city" class="form-label">المدينة</label>
+            {{ form.city }}
+        </div>
+        <div class="mb-3">
+            <label for="id_district" class="form-label">الحي</label>
+            {{ form.district }}
+        </div>
+        <div class="mb-3">
+            <label for="id_area" class="form-label">المساحة</label>
+            {{ form.area }}
+        </div>
+        <div class="mb-3">
+            <label for="id_details" class="form-label">تفاصيل إضافية</label>
+            {{ form.details }}
+        </div>
+        <button type="submit" class="btn btn-primary">حفظ التعديلات</button>
+    </form>
+</div>
+{% endblock %}

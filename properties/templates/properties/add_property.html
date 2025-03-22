@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">
+        <i class="fas fa-plus-square text-success"></i>
+        <span class="fw-bold">إضافة عقار جديد</span>
+    </h2>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                <i class="fas fa-info-circle me-2"></i>{{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- ✅ تم التأكيد على وجود enctype لرفع الملفات -->
+    <form method="post" enctype="multipart/form-data" class="p-4 border rounded bg-white shadow-sm">
+        {% csrf_token %}
+        
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label class="form-label"><i class="fas fa-clipboard-list"></i> نوع الطلب</label>
+                {{ form.request_type }}
+            </div>
+            <div class="col-md-4">
+                <label class="form-label"><i class="fas fa-user-tie"></i> نوع المالك</label>
+                {{ form.owner_type }}
+            </div>
+            <div class="col-md-4">
+                <label class="form-label"><i class="fas fa-building"></i> نوع العقار</label>
+                {{ form.property_type }}
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label class="form-label"><i class="fas fa-ruler-combined"></i> المساحة (م²)</label>
+                {{ form.area }}
+            </div>
+            <div class="col-md-4">
+                <label class="form-label"><i class="fas fa-map-marker-alt"></i> الحي</label>
+                {{ form.district }}
+            </div>
+            <div class="col-md-4">
+                <label class="form-label"><i class="fas fa-city"></i> المدينة</label>
+                {{ form.city }}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <label for="price" class="form-label"><i class="fas fa-money-bill-wave"></i> السعر</label>
+            {{ form.price }}
+        </div>
+        <div class="col-md-6">
+            <label for="is_finance_available" class="form-label"><i class="fas fa-hand-holding-usd"></i> يقبل التمويل</label>
+            {{ form.is_finance_available }}
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="form-label"><i class="fas fa-user"></i> الاسم الكامل</label>
+                {{ form.full_name }}
+            </div>
+            <div class="col-md-6">
+                <label class="form-label"><i class="fas fa-phone"></i> رقم الهاتف</label>
+                {{ form.phone }}
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label"><i class="fas fa-align-left"></i> تفاصيل العقار</label>
+            {{ form.details }}
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label"><i class="fas fa-images"></i> صور العقار (اختياري)</label>
+            <!-- ✅ رفع الصور: name="images" + multiple -->
+            <input type="file" name="images" class="form-control" accept="image/*" multiple>
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-success">
+                <i class="fas fa-save"></i> حفظ العقار
+            </button>
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary ms-2">
+                <i class="fas fa-arrow-left"></i> رجوع
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

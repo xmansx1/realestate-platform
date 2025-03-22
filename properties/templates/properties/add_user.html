@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}إضافة مستخدم{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4"><i class="fas fa-user-plus"></i> إضافة مستخدم جديد</h2>
+    
+    <form method="post" class="border p-4 shadow bg-light">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success"><i class="fas fa-plus-circle"></i> إضافة</button>
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary">رجوع</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}الرئيسية - منصة العقارات{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- شريط التصفية -->
+    <form method="GET" class="card p-4 shadow-sm mb-4">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label">نوع العقار</label>
+                <select class="form-select" name="type">
+                    <option value="">الكل</option>
+                    <option value="apartment" {% if filters.type == "apartment" %}selected{% endif %}>شقة</option>
+                    <option value="villa" {% if filters.type == "villa" %}selected{% endif %}>فيلا</option>
+                    <option value="building" {% if filters.type == "building" %}selected{% endif %}>عمارة</option>
+                    <option value="land" {% if filters.type == "land" %}selected{% endif %}>أرض</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">الحالة</label>
+                <select class="form-select" name="status">
+                    <option value="">الكل</option>
+                    <option value="sale" {% if filters.status == "sale" %}selected{% endif %}>للبيع</option>
+                    <option value="rent" {% if filters.status == "rent" %}selected{% endif %}>للإيجار</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">المدينة</label>
+                <input type="text" class="form-control" name="city" placeholder="اكتب اسم المدينة" value="{{ filters.city|default:'' }}">
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100">تصفية</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- عرض العقارات -->
+    <h2 class="text-center mb-4 fw-bold">جميع العقارات المتاحة</h2>
+    <div class="row">
+        {% for property in properties %}
+        <div class="col-md-4 mb-4">
+          <div class="card shadow-sm">
+            {% if property.propertyimage_set.first %}
+              <img src="{{ property.propertyimage_set.first.image.url }}" class="card-img-top" alt="صورة العقار" style="height:200px;object-fit:cover;">
+            {% else %}
+              <img src="https://via.placeholder.com/400x200" class="card-img-top" alt="لا توجد صورة">
+            {% endif %}
+            <div class="card-body text-end">
+              <!-- ✅ نوع العقار -->
+              <p class="card-text text-muted">
+                <i class="fas fa-building"></i> {{ property.get_property_type_display }} - {{ property.get_request_type_display }}
+              </p>
+        
+              <!-- ✅ المدينة والحي -->
+              <p class="card-text"><strong>المدينة:</strong> {{ property.city }}</p>
+              <p class="card-text"><strong>الحي:</strong> {{ property.district }}</p>
+        
+              <!-- ✅ المساحة -->
+              <p class="card-text"><strong>المساحة:</strong> {{ property.area }} م<sup>2</sup></p>
+        
+              <!-- ✅ السعر -->
+              <p class="card-text fw-bold text-dark">
+                <i class="fas fa-tag text-success"></i> السعر: {{ property.price }} ريال
+              </p>
+        
+              <!-- ✅ زر التفاصيل -->
+              <a href="{% url 'property_detail' property.id %}" class="btn btn-outline-primary w-100">
+                عرض التفاصيل
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        {% empty %}
+        <div class="col-12">
+            <p class="text-center text-muted">لا توجد عقارات تطابق التصفية الحالية.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

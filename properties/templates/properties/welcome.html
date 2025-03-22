@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="height: 70vh;">
+    <div class="alert alert-info text-center" role="alert">
+        ✅ مرحباً بك في منصة العقارات<br>
+        سيتم تحويلك إلى الصفحة الرئيسية خلال ثوانٍ...
+    </div>
+</div>
+
+<script>
+    setTimeout(function() {
+        window.location.href = "/";
+    }, 3000);  // 3 ثوانٍ
+</script>
+{% endblock %}
