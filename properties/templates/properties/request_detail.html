@@ -9,9 +9,10 @@
 
         <p><strong>الاسم الكامل:</strong> {{ request_obj.full_name }}</p>
         <p><strong>رقم الهاتف:</strong> {{ request_obj.phone }}</p>
-        <p><strong>نوع العقار:</strong> {{ request_obj.property_type }}</p>
-        <p><strong>نوع الطلب:</strong> {{ request_obj.request_type }}</p>
-        <p><strong>نوع المالك:</strong> {{ request_obj.owner_type }}</p>
+        <p><strong>نوع العقار:</strong> {{ request_obj.get_property_type_display }}</p>
+        <p><strong>نوع الطلب:</strong> {{ request_obj.get_request_type_display }}</p>
+        <p><strong>نوع المالك:</strong> {{ request_obj.get_owner_type_display }}</p>
+        
         <p><strong>المدينة:</strong> {{ request_obj.city }}</p>
         <p><strong>الحي:</strong> {{ request_obj.district }}</p>
         <p><strong>المساحة:</strong> {{ request_obj.area }} م²</p>

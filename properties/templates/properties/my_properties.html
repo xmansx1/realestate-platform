@@ -1,41 +1,87 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% load static %}
 
-{% block content %}
-<div class="container mt-5">
-    <h2 class="text-center mb-4"><i class="fas fa-thumbtack text-dark"></i> عقاراتي</h2>
+{% block title %}عقاراتي{% endblock %}
 
-    <div class="row">
-        {% for property in properties %}
-        <div class="col-md-4 mb-4">
-            <div class="card shadow-sm">
-                {% if property.propertyimage_set.first %}
-                <img src="{{ property.propertyimage_set.first.image.url }}" class="card-img-top" alt="صورة العقار" style="height: 200px; object-fit: cover;">
-                {% else %}
-                <img src="https://via.placeholder.com/400x200?text=لا+توجد+صورة" class="card-img-top" alt="صورة افتراضية">
-                {% endif %}
-                <div class="card-body">
-                    <h5 class="card-title">{{ property.get_property_type_display }} - {{ property.get_request_type_display }}</h5>
-                    <p class="card-text">المدينة: {{ property.city }}</p>
-                    <p class="card-text">الحي: {{ property.district }}</p>
-                    <p class="card-text fw-bold">السعر: ريال</p>
-                    <div class="d-flex justify-content-between mt-3">
-                        <a href="{% url 'edit_property' property.id %}" class="btn btn-warning">
-                            <i class="fas fa-edit"></i> تعديل
-                        </a>
-                        <form method="post" action="{% url 'delete_property' property.id %}" onsubmit="return confirm('هل أنت متأكد من حذف هذا العقار؟')">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-danger">
-                                <i class="fas fa-trash"></i> حذف
-                            </button>
-                        </form>
+{% block content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+    .property-card {
+        transition: 0.3s;
+        border-radius: 10px;
+        border: 1px solid #eee;
+        overflow: hidden;
+        height: 100%;
+    }
+
+    .property-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .property-image {
+        height: 200px;
+        width: 100%;
+        object-fit: cover;
+    }
+
+    .property-title {
+        font-weight: bold;
+        font-size: 1.1rem;
+    }
+</style>
+
+<div class="container mt-5">
+    <h2 class="fw-bold text-center mb-4"><i class="bi bi-house-door"></i> عقاراتي</h2>
+
+    {% if properties %}
+        <div class="row">
+            {% for property in properties %}
+                <div class="col-md-4 mb-4 d-flex">
+                    <div class="card property-card w-100">
+                        {% if property.propertyimage_set.first %}
+                            <img src="{{ property.propertyimage_set.first.image.url }}" class="property-image" alt="صورة العقار">
+                        {% else %}
+                            <img src="https://via.placeholder.com/400x200?text=لا+توجد+صورة" class="property-image" alt="لا توجد صورة">
+                        {% endif %}
+
+                        <div class="card-body text-end">
+                            <p class="property-title text-primary">
+                                {{ property.get_property_type_display }} - {{ property.get_request_type_display }}
+                            </p>
+                            <p><i class="bi bi-geo-alt-fill text-danger"></i> {{ property.city }}</p>
+                            <p><i class="bi bi-currency-dollar text-success"></i>
+                                {% if property.price %}
+                                    {{ property.price|floatformat:0 }} ريال
+                                {% else %}
+                                    غير محدد
+                                {% endif %}
+                            </p>
+
+                            <div class="d-grid gap-2 mt-3">
+                                <!-- زر التعديل -->
+                                <a href="{% url 'edit_property' property.id %}" class="btn btn-outline-primary">
+                                    <i class="bi bi-pencil-square"></i> تعديل
+                                </a>
+
+                                <!-- زر الحذف -->
+                                <form method="POST" action="{% url 'delete_property' property.id %}" onsubmit="return confirm('هل أنت متأكد أنك تريد حذف هذا العقار؟');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-outline-danger">
+                                        <i class="bi bi-trash"></i> حذف
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            {% endfor %}
         </div>
-        {% empty %}
-        <p class="text-center">لا توجد عقارات حالياً.</p>
-        {% endfor %}
-    </div>
+    {% else %}
+        <div class="alert alert-info text-center">
+            <i class="bi bi-info-circle"></i> لا توجد عقارات مسجلة حاليًا.
+        </div>
+    {% endif %}
 </div>
 {% endblock %}

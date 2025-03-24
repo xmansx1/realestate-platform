@@ -57,13 +57,14 @@
             <div class="d-flex justify-content-between">
                 <a href="{% url 'home' %}" class="btn btn-secondary">
                     <i class="fas fa-arrow-left"></i> العودة للرئيسية
-                </a>
-                <a href="https://wa.me/966{{ property.phone }}?text=مرحبًا%20أرغب%20في%20الاستفسار%20عن%20العقار%20المعروض%20في%20منصة%20العقارات" 
-                target="_blank" 
-                class="btn btn-success d-flex align-items-center justify-content-center" 
-                style="font-weight: bold;">
-                 <i class="fab fa-whatsapp me-2 fs-5"></i> تواصل واتساب
-             </a>
+                    <a href="https://wa.me/{{ whatsapp_number }}?{{ whatsapp_message }}" 
+                    class="btn btn-success mt-3" 
+                    target="_blank">
+                    <i class="fab fa-whatsapp"></i> تواصل واتساب
+                 </a>
+                 
+                 
+             
              
               
               

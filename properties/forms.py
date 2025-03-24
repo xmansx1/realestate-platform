@@ -28,21 +28,51 @@ class PropertyRequestForm(forms.ModelForm):
 from django import forms
 from .models import Property
 
+from django import forms
+from .models import Property
+
 class PropertyForm(forms.ModelForm):
     class Meta:
         model = Property
-        exclude = ['user', 'created_at']
+        fields = [
+            'property_type',
+            'request_type',
+            'owner_type',
+            'city',
+            'district',
+            'area',
+            'price',
+            'description',
+            'full_name',
+            'phone',
+            'is_finance_available',
+        ]
+
+        labels = {
+            'property_type': 'نوع العقار',
+            'request_type': 'نوع الطلب',
+            'owner_type': 'نوع المالك',
+            'city': 'المدينة',
+            'district': 'الحي',
+            'area': 'المساحة (م²)',
+            'price': 'السعر',
+            'description': 'وصف العقار',
+            'full_name': 'اسم المالك أو الوسيط',
+            'phone': 'رقم الهاتف',
+            'is_finance_available': 'هل يوجد تمويل؟',
+        }
+
         widgets = {
-            'request_type': forms.Select(attrs={'class': 'form-control'}),
-            'owner_type': forms.Select(attrs={'class': 'form-control'}),
-            'property_type': forms.Select(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
             'city': forms.TextInput(attrs={'class': 'form-control'}),
             'district': forms.TextInput(attrs={'class': 'form-control'}),
             'area': forms.NumberInput(attrs={'class': 'form-control'}),
-            'details': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'price': forms.NumberInput(attrs={'class': 'form-control'}),
             'full_name': forms.TextInput(attrs={'class': 'form-control'}),
             'phone': forms.TextInput(attrs={'class': 'form-control'}),
+            'is_finance_available': forms.Select(attrs={'class': 'form-select'}),
         }
+
 
 
 from django import forms
@@ -66,8 +96,21 @@ class PropertyForm(forms.ModelForm):
     class Meta:
         model = Property
         fields = [
-            'request_type', 'owner_type', 'property_type',
-            'area', 'city', 'district', 'full_name', 'phone',
-            'details', 'price', 'is_finance_available'
+            'property_type',
+            'request_type',
+            'owner_type',
+            'city',
+            'district',
+            'area',
+            'price',
+            'description',
+            'full_name',
+            'phone',
+            'is_finance_available',
+ 
         ]
-
+    widgets = {
+            'full_name': forms.TextInput(attrs={'class': 'form-control'}),  # ✅ بدون readonly
+            'phone': forms.TextInput(attrs={'class': 'form-control'}),
+            'is_finance_available': forms.Select(attrs={'class': 'form-select'}),
+        }

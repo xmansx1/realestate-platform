@@ -10,10 +10,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("SECRET_KEY", "insecure-key")
 
 # التشغيل
-DEBUG = os.environ.get("DEBUG", "False") == "True"
+DEBUG = True
 
 # النطاقات المسموح بها
-ALLOWED_HOSTS = [os.environ.get("ALLOWED_HOSTS", "127.0.0.1")]
+ALLOWED_HOSTS = ["*"]
+
 
 # التطبيقات
 INSTALLED_APPS = [
@@ -56,6 +57,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'properties.context_processors.news_ticker',
+                'properties.context_processors.footer_settings',
             ],
         },
     },
@@ -94,7 +96,8 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # ملفات الوسائط (الصور)
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = BASE_DIR / 'media'
+
 
 # المسارات بعد الدخول والخروج
 LOGIN_REDIRECT_URL = 'dashboard'

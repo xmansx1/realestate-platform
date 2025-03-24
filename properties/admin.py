@@ -25,3 +25,10 @@ class NewsAdmin(admin.ModelAdmin):
     list_display = ['title', 'is_active', 'created_at']
     list_filter = ['is_active']
     search_fields = ['title']
+
+from .models import FooterSettings
+
+@admin.register(FooterSettings)
+class FooterSettingsAdmin(admin.ModelAdmin):
+    list_display = ['about', 'whatsapp', 'phone']
+    

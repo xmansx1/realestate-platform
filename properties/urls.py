@@ -11,14 +11,13 @@ urlpatterns = [
 
 
     # الطلبات
+    path('property/image/delete/<int:image_id>/', views.delete_property_image, name='delete_property_image'),
     path('طلب-عقار/', views.create_property_request, name='create_property_request'), 
     path('طلباتي/', views.my_requests, name='my_requests'),
     path('تعديل-طلب/<int:request_id>/', views.edit_request, name='edit_request'),
     path('حذف-طلب/<int:request_id>/', views.delete_request, name='delete_request'),
     path('طلبات-العقارات/', views.property_requests, name='property_requests'),
-    path('delete-image/<int:image_id>/', views.delete_property_image, name='delete_property_image'),
     path('لوحة-التحكم/إضافة-مستخدم/', views.add_user, name='add_user'),
-    
     path('تعديل-طلب/<int:request_id>/', views.edit_request, name='edit_request'),
    path('طلبات-العقار/', views.property_requests, name='property_requests'),
    path('حذف-طلب/<int:request_id>/', views.delete_request, name='delete_request'),

@@ -36,6 +36,7 @@ class Property(models.Model):
     full_name = models.CharField(max_length=255)
     phone = models.CharField(max_length=20)
     created_at = models.DateTimeField(auto_now_add=True)
+    description = models.TextField(verbose_name="وصف العقار", blank=True, null=True)
     
     FINANCE_CHOICES = [
         (True, 'نعم'),
@@ -101,3 +102,17 @@ class News(models.Model):
 
     def __str__(self):
         return self.title
+
+class FooterSettings(models.Model):
+    about = models.TextField("نبذة عنا", blank=True)
+    whatsapp = models.CharField("رقم الواتساب", max_length=20, blank=True)
+    twitter = models.URLField("رابط تويتر", blank=True)
+    phone = models.CharField("رقم الهاتف", max_length=20, blank=True)
+    snapchat = models.URLField("رابط سناب شات", blank=True)
+
+    def __str__(self):
+        return "إعدادات الفوتر"
+
+    class Meta:
+        verbose_name = "إعدادات الفوتر"
+        verbose_name_plural = "إعدادات الفوتر"
