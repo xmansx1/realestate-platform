@@ -7,10 +7,10 @@ from django.contrib.messages import constants as messages
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # السرية (يؤخذ من المتغير البيئي)
-SECRET_KEY = os.environ.get("SECRET_KEY", "insecure-key")
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "insecure-key")
 
 # التشغيل
-DEBUG = True
+DEBUG = os.environ.get("DEBUG") == "True"
 
 # النطاقات المسموح بها
 ALLOWED_HOSTS = ['.onrender.com']
