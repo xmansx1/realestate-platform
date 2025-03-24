@@ -11,7 +11,7 @@
     <div class="row">
         <!-- عرض الصور -->
         <div class="col-md-6">
-            {% if property.propertyimage_set.all %}
+            {% if property.propertyimage_set.all.count > 0 %}
                 <div id="propertyImages" class="carousel slide mb-4" data-bs-ride="carousel">
                     <div class="carousel-inner">
                         {% for image in property.propertyimage_set.all %}
