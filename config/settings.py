@@ -92,10 +92,14 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # اللغة والتوقيت
-LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+LANGUAGE_CODE = 'ar'
+
+TIME_ZONE = 'Asia/Riyadh'
+
 USE_I18N = True
+USE_L10N = True
 USE_TZ = True
+
 
 # الملفات الثابتة
 STATIC_URL = '/static/'

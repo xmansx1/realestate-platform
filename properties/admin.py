@@ -32,3 +32,18 @@ from .models import FooterSettings
 class FooterSettingsAdmin(admin.ModelAdmin):
     list_display = ['about', 'whatsapp', 'phone']
     
+
+    from django.contrib import admin
+from django.contrib.admin.sites import AdminSite
+
+class MyAdminSite(AdminSite):
+    site_header = "لوحة إدارة منصة العقارات"
+    site_title = "منصة العقارات"
+    index_title = "التحكم في المحتوى"
+
+    def each_context(self, request):
+        context = super().each_context(request)
+        context['css_files'] = ['/static/css/admin-arabic.css']
+        return context
+
+admin_site = MyAdminSite(name='myadmin')

@@ -2,10 +2,11 @@ from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
 from . import views
+from properties.admin import admin_site
 
 urlpatterns = [
     path('', views.home, name='home'),
-
+    path('admin/', admin_site.urls),
     # تسجيل حساب
     path('تسجيل/', views.signup, name='signup'),
 

@@ -1,0 +1,11 @@
+/* جعل الواجهة من اليمين لليسار */
+body {
+    direction: rtl !important;
+    font-family: 'Cairo', 'Tajawal', sans-serif !important;
+}
+
+/* تحسين شكل القوائم */
+.module caption,
+.module h2 {
+    text-align: right !important;
+}
