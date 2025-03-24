@@ -3,6 +3,8 @@ from pathlib import Path
 import dj_database_url
 from django.contrib.messages import constants as messages
 
+
+
 # المسار الأساسي
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -13,7 +15,8 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "insecure-key")
 DEBUG = os.environ.get("DEBUG") == "True"
 
 # النطاقات المسموح بها
-ALLOWED_HOSTS = ['.onrender.com']
+ALLOWED_HOSTS = ['.onrender.com', '127.0.0.1', 'localhost']
+
 
 
 
@@ -28,6 +31,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'properties',
     'widget_tweaks',
+       'cloudinary',
+    'cloudinary_storage',
 ]
 
 # الوسيطات
@@ -112,6 +117,14 @@ MESSAGE_TAGS = {
     messages.WARNING: "alert-warning",
     messages.ERROR: "alert-danger",
 }
-import os
+
 
  
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
+}
