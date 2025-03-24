@@ -13,7 +13,8 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "insecure-key")
 DEBUG = True
 
 # النطاقات المسموح بها
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ['.onrender.com']
+
 
 
 # التطبيقات
@@ -111,3 +112,6 @@ MESSAGE_TAGS = {
     messages.WARNING: "alert-warning",
     messages.ERROR: "alert-danger",
 }
+import os
+
+ 
