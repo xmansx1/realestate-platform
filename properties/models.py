@@ -59,10 +59,10 @@ from cloudinary.models import CloudinaryField
 
 class PropertyImage(models.Model):
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
-    image = CloudinaryField('image')
+    image = CloudinaryField('image')  # ← هذا السطر مهم جدًا
 
     def __str__(self):
-        return f"صورة - {self.property.full_name}"
+        return f"Image for {self.property}"
 
 
 

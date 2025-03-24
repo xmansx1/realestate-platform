@@ -117,9 +117,9 @@ class PropertyForm(forms.ModelForm):
         }
 from django import forms
 from .models import PropertyImage
-
 class PropertyImageForm(forms.ModelForm):
     class Meta:
         model = PropertyImage
         fields = ['image']
+
 
