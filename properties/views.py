@@ -1,6 +1,8 @@
 # باقي الاستيرادات كما هي في الأعلى
 import io
-
+from django.forms import modelformset_factory
+from .models import Property, PropertyImage
+from .forms import PropertyForm, PropertyImageForm
 from django.db import models
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -14,7 +16,9 @@ import pandas as pd
 from django.contrib.auth.models import User
 from django.utils.http import urlencode
 from django.contrib.auth.decorators import user_passes_test
-
+from django.forms import modelformset_factory
+from .models import Property, PropertyImage
+from .forms import PropertyImageForm
 
 # الصفحة الرئيسية
 def home(request):
@@ -196,25 +200,32 @@ def property_detail(request, pk):
 # إضافة عقار
 @login_required
 @login_required
+
+
 def add_property(request):
+    ImageFormSet = modelformset_factory(PropertyImage, form=PropertyImageForm, extra=0)
+
     if request.method == 'POST':
-        form = PropertyForm(request.POST, request.FILES)
-        images = request.FILES.getlist('images')
+        form = PropertyForm(request.POST)
+        files = request.FILES.getlist('images')  # ← نحصل على كل الصور
+
         if form.is_valid():
             property = form.save(commit=False)
-            property.user = request.user
+            property.user = request.user  # إذا كان العقار مرتبط بمستخدم
             property.save()
-            for img in images:
-                PropertyImage.objects.create(property=property, image=img)
-            messages.success(request, "تمت إضافة العقار بنجاح ✅")
-            return redirect('my_properties')
-        else:
-            print(form.errors)  # ✅ اطبع الأخطاء للمساعدة
-            messages.error(request, "❌ حدث خطأ أثناء الحفظ. تحقق من الحقول.")
-    else:  # ← هذا يجب أن يكون بنفس مستوى if request.method
+
+            # حفظ كل صورة وربطها بالعقار
+            for f in files:
+                PropertyImage.objects.create(property=property, image=f)
+
+            return redirect('dashboard')  # أو أي صفحة نجاح
+    else:
         form = PropertyForm()
-    
-    return render(request, 'properties/add_property.html', {'form': form})
+
+    return render(request, 'add_property.html', {
+        'form': form,
+    })
+
 
 # عرض عقارات المستخدم
  

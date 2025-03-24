@@ -2,6 +2,10 @@ import os
 from pathlib import Path
 import dj_database_url
 from django.contrib.messages import constants as messages
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+import cloudinary_storage
 
 
 
@@ -13,7 +17,7 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "insecure-key")
 
 # التشغيل
 DEBUG = os.environ.get("DEBUG") == "True"
-
+DEBUG = True
 # النطاقات المسموح بها
 ALLOWED_HOSTS = ['.onrender.com', '127.0.0.1', 'localhost']
 
@@ -124,7 +128,7 @@ MESSAGE_TAGS = {
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
-    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
-    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
+    'CLOUD_NAME': os.environ.get('dvptglfs2'),
+    'API_KEY': os.environ.get('997257163374881'),
+    'API_SECRET': os.environ.get('u5XPED3CQa2gd7PyHuEaw7BFsbY'),
 }

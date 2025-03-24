@@ -46,6 +46,7 @@ class PropertyForm(forms.ModelForm):
             'full_name',
             'phone',
             'is_finance_available',
+            'image',
         ]
 
         labels = {
@@ -114,3 +115,10 @@ class PropertyForm(forms.ModelForm):
             'phone': forms.TextInput(attrs={'class': 'form-control'}),
             'is_finance_available': forms.Select(attrs={'class': 'form-select'}),
         }
+from django import forms
+from .models import PropertyImage
+
+class PropertyImageForm(forms.ModelForm):
+    class Meta:
+        model = PropertyImage
+        fields = ['image']
