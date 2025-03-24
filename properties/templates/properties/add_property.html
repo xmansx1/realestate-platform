@@ -58,7 +58,6 @@
                 <label class="form-label">وصف العقار</label>
                 {{ form.description|add_class:"form-control" }}
             </div>
-
             <div class="col-md-6">
                 <label class="form-label">اسم المالك / الوسيط</label>
                 {{ form.full_name|add_class:"form-control" }}
@@ -74,7 +73,7 @@
 
             <div class="col-12">
                 <label class="form-label"><i class="bi bi-cloud-upload"></i> رفع صور العقار</label>
-                <input type="file" name="images" class="form-control" multiple>
+                <input type="file" name="images" class="form-control" multiple required>
             </div>
         </div>
 
