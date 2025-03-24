@@ -89,11 +89,14 @@
         <div class="col-lg-4 col-md-6 col-sm-12 mb-4 d-flex">
           <div class="card property-card w-100 h-100">
       
-                {% if property.propertyimage_set.first %}
-                    <img src="{{ property.propertyimage_set.first.image.url }}" class="property-image" alt="صورة العقار">
-                {% else %}
-                    <img src="https://via.placeholder.com/400x200?text=لا+توجد+صورة" class="property-image" alt="لا توجد صورة">
-                {% endif %}
+            {% with property.propertyimage_set.first as image %}
+            {% if image %}
+                <img src="{{ image.image.url }}" class="property-image" alt="صورة العقار">
+            {% else %}
+                <img src="https://via.placeholder.com/400x200?text=لا+توجد+صورة" class="property-image" alt="لا توجد صورة">
+            {% endif %}
+        {% endwith %}
+        
 
                 <div class="card-body text-end">
                     <p class="text-muted mb-2">

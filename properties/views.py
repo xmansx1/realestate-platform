@@ -150,28 +150,34 @@ def property_detail(request, pk):
     })
 
 
- 
+    
+from django.contrib import messages  # تأكد من استيراده
+
 @login_required
 def add_property(request):
     if request.method == 'POST':
-        form = PropertyForm(request.POST)
-        images = request.FILES.getlist('images')
+        form = PropertyForm(request.POST, request.FILES)  # ✅ تم تمرير request.FILES
+        files = request.FILES.getlist('images')  # ✅ الحصول على الصور المرفوعة
+
         if form.is_valid():
             property = form.save(commit=False)
             property.user = request.user
             property.save()
 
-            for image in images:
-                PropertyImage.objects.create(property=property, image=image)
+            # ✅ حفظ الصور المرتبطة بالعقار
+            for f in files:
+                PropertyImage.objects.create(property=property, image=f)
 
-            messages.success(request, "تم إضافة العقار بنجاح ✅")
+            messages.success(request, "✅ تم إضافة العقار بنجاح.")
             return redirect('dashboard')
         else:
-            messages.error(request, "حدث خطأ أثناء الإرسال ❌")
+            messages.error(request, "❌ حدث خطأ أثناء حفظ البيانات، تأكد من الحقول.")
     else:
         form = PropertyForm()
 
-    return render(request, 'properties/add_property.html', {'form': form})
+    context = {'form': form}
+    return render(request, 'properties/add_property.html', context)
+
 
 
 

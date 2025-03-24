@@ -47,3 +47,8 @@ class MyAdminSite(AdminSite):
         return context
 
 admin_site = MyAdminSite(name='myadmin')
+
+from .models import Property, PropertyImage
+
+admin_site.register(Property)
+admin_site.register(PropertyImage)

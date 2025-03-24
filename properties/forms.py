@@ -35,19 +35,19 @@ class PropertyForm(forms.ModelForm):
     class Meta:
         model = Property
         fields = [
-            'property_type',
-            'request_type',
-            'owner_type',
-            'city',
-            'district',
-            'area',
-            'price',
-            'description',
-            'full_name',
-            'phone',
-            'is_finance_available',
-            'image',
+            'property_type',        # نوع العقار
+            'request_type',         # نوع الطلب
+            'owner_type',           # نوع المالك
+            'city',                 # المدينة
+            'district',             # الحي
+            'area',                 # المساحة
+            'price',                # السعر
+            'description',          # وصف العقار
+            'full_name',            # اسم المالك أو الوسيط
+            'phone',                # رقم الهاتف
+            'is_finance_available'  # هل يوجد تمويل؟
         ]
+
 
         labels = {
             'property_type': 'نوع العقار',
@@ -122,3 +122,4 @@ class PropertyImageForm(forms.ModelForm):
     class Meta:
         model = PropertyImage
         fields = ['image']
+
