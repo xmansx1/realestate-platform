@@ -15,22 +15,9 @@
     color: #000;
   }
   
-  @keyframes scroll-text {
-    0% {
-      transform: translateX(0%);
-    }
-    100% {
-      transform: translateX(-100%);
-    }
-  }
-  @keyframes scroll-left {
-    0% {
-      transform: translateX(100%);
-    }
-    100% {
-      transform: translateX(-100%);
-    }
-  }
+
+
+
   
   .news-ticker {
     overflow: hidden;
@@ -40,14 +27,7 @@
     font-weight: bold;
     direction: rtl;
   }
-  @keyframes scroll-left {
-  0% {
-    transform: translateX(100%);
-  }
-  100% {
-    transform: translateX(-100%);
-  }
-}
+
 
 .news-ticker {
   overflow: hidden;
@@ -56,4 +36,18 @@
   font-weight: bold;
   border-bottom: 1px solid #ccc;
   direction: rtl;
+}
+@keyframes scroll-left {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.news-ticker .ticker-content {
+  animation: scroll-left 40s linear infinite; /* تأكد أنها نفس المدة هنا وفي JS */
+  display: inline-block;
+  white-space: nowrap;
 }
