@@ -7,22 +7,17 @@ import cloudinary.uploader
 import cloudinary.api
 import cloudinary_storage
 
-
-
 # المسار الأساسي
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# السرية (يؤخذ من المتغير البيئي)
+# السرية (تؤخذ من المتغير البيئي)
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "insecure-key")
 
 # التشغيل
-DEBUG = os.environ.get("DEBUG") == "True"
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", "False") == "True"
+
 # النطاقات المسموح بها
 ALLOWED_HOSTS = ['.onrender.com', '127.0.0.1', 'localhost']
-
-
-
 
 # التطبيقات
 INSTALLED_APPS = [
@@ -35,7 +30,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'properties',
     'widget_tweaks',
-       'cloudinary',
+    'cloudinary',
     'cloudinary_storage',
 ]
 
@@ -58,7 +53,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / "templates"],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -93,25 +88,20 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # اللغة والتوقيت
 LANGUAGE_CODE = 'ar'
-
 TIME_ZONE = 'Asia/Riyadh'
-
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
-
 
 # الملفات الثابتة
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # ملفات الوسائط (الصور)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-
 
 # المسارات بعد الدخول والخروج
 LOGIN_REDIRECT_URL = 'dashboard'
@@ -126,13 +116,11 @@ MESSAGE_TAGS = {
     messages.ERROR: "alert-danger",
 }
 
-
- 
-
+# التخزين في Cloudinary
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.environ.get('dvptglfs2'),
-    'API_KEY': os.environ.get('997257163374881'),
-    'API_SECRET': os.environ.get('u5XPED3CQa2gd7PyHuEaw7BFsbY'),
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
 }
