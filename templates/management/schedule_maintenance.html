@@ -1,0 +1,35 @@
+{% extends "accounts/base_admin.html" %}
+{% load widget_tweaks %}
+{% block title %}🛠️ صيانة مجدولة{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto px-4 py-8">
+  
+  <h1 class="text-2xl font-bold text-green-700 mb-6">🛠️ تسجيل صيانة مجدولة للوحدة: {{ unit.unit_number }}</h1>
+
+  <form method="post" enctype="multipart/form-data" class="bg-white p-6 rounded-xl shadow space-y-6 border">
+    {% csrf_token %}
+
+    {% for field in form %}
+      <div>
+        <label class="block mb-1 text-sm font-medium text-gray-700">{{ field.label }}</label>
+        {{ field|add_class:"w-full p-2 border rounded-md text-sm" }}
+        {% if field.help_text %}
+          <p class="text-xs text-gray-500 mt-1">{{ field.help_text }}</p>
+        {% endif %}
+        {% for error in field.errors %}
+          <p class="text-sm text-red-600 mt-1">{{ error }}</p>
+        {% endfor %}
+      </div>
+    {% endfor %}
+
+    <div class="flex justify-end">
+      <button type="submit"
+              class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md text-sm font-medium shadow">
+        💾 حفظ الصيانة
+      </button>
+    </div>
+  </form>
+
+</div>
+{% endblock %}

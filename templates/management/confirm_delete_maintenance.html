@@ -1,0 +1,33 @@
+{% extends "accounts/base_admin.html" %}
+{% block title %}🗑️ تأكيد حذف الصيانة{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto px-4 py-8">
+
+  <div class="bg-white border rounded-xl shadow p-6 space-y-6">
+    <h1 class="text-xl font-bold text-red-700">🗑️ تأكيد حذف الصيانة المجدولة</h1>
+    <p class="text-gray-700">
+      هل أنت متأكد أنك تريد حذف عملية الصيانة التالية؟
+    </p>
+
+    <ul class="text-sm text-gray-600 space-y-1">
+      <li><strong>الوحدة:</strong> {{ maintenance.unit.unit_number }}</li>
+      <li><strong>الوصف:</strong> {{ maintenance.description }}</li>
+      <li><strong>التاريخ:</strong> {{ maintenance.date }}</li>
+    </ul>
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="flex justify-between mt-6">
+        <a href="{% url 'management:unit_detail' maintenance.unit.pk %}" class="text-sm text-gray-600 hover:underline">
+          ↩️ إلغاء
+        </a>
+        <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
+          نعم، احذف
+        </button>
+      </div>
+    </form>
+  </div>
+
+</div>
+{% endblock %}

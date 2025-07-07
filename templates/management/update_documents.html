@@ -1,0 +1,40 @@
+{% extends "accounts/base_owner.html" %}
+{% block title %}📤 تحديث مستندات العقار{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto py-8">
+
+  <h1 class="text-2xl font-bold text-green-700 mb-4">
+    تحديث مستندات العقار: {{ property.name }}
+  </h1>
+
+  <form method="POST" enctype="multipart/form-data" class="space-y-5 bg-white shadow rounded-xl p-6 border">
+    {% csrf_token %}
+    {% for field in form %}
+      <div>
+        <label class="block mb-1 text-sm font-medium text-gray-700">
+          {{ field.label }}
+        </label>
+        {{ field }}
+        {% if field.help_text %}
+          <small class="text-gray-500">{{ field.help_text }}</small>
+        {% endif %}
+        {% for error in field.errors %}
+          <p class="text-red-600 text-sm">{{ error }}</p>
+        {% endfor %}
+      </div>
+    {% endfor %}
+
+    <div class="mt-6">
+      <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded">
+        💾 حفظ المستندات
+      </button>
+      <a href="{% url 'management:property_documents' property.pk %}"
+         class="ml-4 text-sm text-gray-600 hover:underline">
+         ← العودة
+      </a>
+    </div>
+  </form>
+
+</div>
+{% endblock %}

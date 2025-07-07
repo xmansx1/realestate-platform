@@ -1,0 +1,42 @@
+{% extends 'accounts/base_admin.html' %}
+{% block title %}صفقاتي المنفذة{% endblock %}
+{% block content %}
+<h2 class="text-2xl font-bold text-green-700 mb-4">📈 صفقاتي المنفذة</h2>
+
+<table class="w-full bg-white rounded shadow table-auto text-sm">
+  <thead class="bg-gray-100 text-right text-gray-700">
+    <tr>
+      <th class="p-3">رقم الصفقة</th>
+      <th class="p-3">الطلب</th>
+      <th class="p-3">العميل</th>
+      <th class="p-3">المدينة</th>
+      <th class="p-3">المبلغ</th>
+      <th class="p-3">عمولتي</th>
+      <th class="p-3">تاريخ التنفيذ</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for deal in deals %}
+    <tr class="border-t">
+      <td class="p-3">{{ deal.id }}</td>
+      <td class="p-3">#{{ deal.request.id }}</td>
+      <td class="p-3">{{ deal.request.full_name }}</td>
+      <td class="p-3">{{ deal.request.city }}</td>
+      <td class="p-3">{{ deal.amount|floatformat:"0" }} ريال</td>
+      <td class="p-3">
+        {% if deal.publisher and deal.executed_by != deal.publisher %}
+          {{ deal.commission|floatformat:"0" }} × 40% = {{ deal.commission|floatformat:"0"|add:""|floatformat:"0"|floatformat:"0"|add:""|divisibleby:2 }}
+        {% else %}
+          {{ deal.commission|floatformat:"0" }} × 80% = {{ deal.commission|floatformat:"0"|add:""|divisibleby:5 }}
+        {% endif %}
+      </td>
+      <td class="p-3">{{ deal.created_at|date:"Y-m-d" }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="7" class="text-center p-4 text-gray-500">لا توجد صفقات بعد.</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

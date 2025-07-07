@@ -1,0 +1,39 @@
+<!-- templates/accounts/login.html -->
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>تسجيل دخول المشرف</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div class="bg-white p-8 rounded shadow-lg w-full max-w-md">
+    <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">🎯 دخول المشرف</h2>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="mb-4 text-sm text-red-600 bg-red-100 p-2 rounded">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="POST" novalidate class="space-y-4">
+      {% csrf_token %}
+      <div>
+        <label class="block text-gray-700 text-sm font-medium mb-1">رقم الجوال</label>
+        {{ form.phone }}
+      </div>
+      <div>
+        <label class="block text-gray-700 text-sm font-medium mb-1">كلمة المرور</label>
+        {{ form.password }}
+      </div>
+
+      <button type="submit" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition">
+        تسجيل الدخول
+      </button>
+    </form>
+  </div>
+</body>
+</html>

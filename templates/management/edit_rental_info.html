@@ -1,0 +1,27 @@
+{% extends "accounts/base_owner.html" %}
+{% block title %}✏️ تعديل عقد الإيجار{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto bg-white p-6 rounded-xl shadow mt-6">
+
+  <h2 class="text-xl font-bold text-blue-700 mb-4">✏️ تعديل عقد الإيجار للوحدة {{ unit.unit_number }}</h2>
+
+  <form method="post" class="space-y-4">
+    {% csrf_token %}
+    {% for field in form %}
+      <div>
+        <label class="block text-sm text-gray-700 mb-1 font-medium">{{ field.label }}</label>
+        {{ field|add_class:"w-full p-2 border rounded" }}
+        {% if field.errors %}
+          <p class="text-sm text-red-600 mt-1">{{ field.errors|striptags }}</p>
+        {% endif %}
+      </div>
+    {% endfor %}
+
+    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm font-semibold">
+      💾 حفظ التعديلات
+    </button>
+  </form>
+
+</div>
+{% endblock %}

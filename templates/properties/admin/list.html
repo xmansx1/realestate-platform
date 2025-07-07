@@ -1,0 +1,93 @@
+{% extends 'accounts/base_admin.html' %}
+{% block title %}العقارات{% endblock %}
+
+{% block content %}
+<div class="bg-white shadow p-6 rounded-xl space-y-6">
+
+  <!-- العنوان والزر -->
+  <div class="flex justify-between items-center border-b pb-4">
+    <div>
+      <h1 class="text-2xl font-bold text-green-700 flex items-center gap-2">
+        🏠 إدارة العقارات
+      </h1>
+      <p class="text-sm text-gray-500 mt-1">إضافة، تعديل، حذف، أو معاينة العقارات</p>
+    </div>
+    <a href="{% url 'properties:admin_create' %}" class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-md text-sm font-semibold shadow">
+      ➕ إضافة عقار
+    </a>
+  </div>
+
+  <!-- نموذج التصفية -->
+  <form method="get" class="flex flex-wrap items-center gap-4 bg-gray-50 p-4 rounded-md border border-gray-200">
+    <div>
+      <label for="status" class="block text-sm font-medium text-gray-700 mb-1">تصفية بالحالة:</label>
+      <select name="status" id="status" onchange="this.form.submit()" class="block w-40 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
+        <option value="">الكل</option>
+        <option value="active" {% if selected_status == 'active' %}selected{% endif %}>نشط</option>
+        <option value="archived" {% if selected_status == 'archived' %}selected{% endif %}>مؤرشف</option>
+      </select>
+    </div>
+  </form>
+
+  <!-- جدول العقارات -->
+  <div class="overflow-x-auto">
+    <table class="min-w-full text-right border border-gray-200 rounded-lg overflow-hidden text-sm">
+      <thead class="bg-gray-100 text-gray-700 font-semibold">
+        <tr>
+          <th class="px-4 py-2">#</th>
+          <th class="px-4 py-2">العنوان</th>
+          <th class="px-4 py-2">السعر</th>
+          <th class="px-4 py-2">الموقع</th>
+          <th class="px-4 py-2">الحالة</th>
+          <th class="px-4 py-2">صورة</th>
+          <th class="px-4 py-2">العمليات</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for prop in properties %}
+        <tr class="border-t hover:bg-gray-50 transition">
+          <td class="px-4 py-2">{{ forloop.counter }}</td>
+          <td class="px-4 py-2 font-medium text-green-700">{{ prop.title }}</td>
+          <td class="px-4 py-2">{{ prop.price|floatformat:0 }} ريال</td>
+          <td class="px-4 py-2">{{ prop.location|truncatechars:20 }}</td>
+          <td class="px-4 py-2">
+            {% if prop.status == 'active' %}
+              <span class="text-green-600 font-semibold">نشط</span>
+            {% else %}
+              <span class="text-gray-500 font-semibold">مؤرشف</span>
+            {% endif %}
+          </td>
+          <td class="px-4 py-2">
+            {% if prop.image %}
+              <img src="{{ prop.image.url }}" class="w-14 h-14 object-cover rounded-md border" alt="صورة">
+            {% else %}
+              <span class="text-gray-400 italic">بدون</span>
+            {% endif %}
+          </td>
+          <td class="px-4 py-2 flex flex-wrap gap-2">
+
+            <a href="{% url 'properties:admin_edit' prop.id %}" class="bg-yellow-100 hover:bg-yellow-200 text-yellow-700 px-3 py-1 rounded-md text-xs font-medium">
+              ✏️ تعديل
+            </a>
+
+            <a href="{% url 'properties:admin_delete' prop.id %}" class="bg-red-100 hover:bg-red-200 text-red-700 px-3 py-1 rounded-md text-xs font-medium">
+              🗑️ حذف
+            </a>
+
+            <a href="{% url 'properties:detail' prop.id %}" target="_blank" class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1 rounded-md text-xs font-medium">
+              👁️ معاينة
+            </a>
+
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="7" class="text-center py-6 text-gray-500">لا توجد عقارات حالياً.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends 'accounts/base_admin.html' %}
+{% load widget_tweaks %}
+{% block title %}نموذج العقار{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto bg-white shadow p-6 rounded-xl">
+  <h2 class="text-xl font-semibold text-green-700 mb-4">📝 بيانات العقار</h2>
+
+  <form method="POST" enctype="multipart/form-data" class="space-y-4">
+    {% csrf_token %}
+
+    {% for field in form %}
+      {% if field.name != "latitude" and field.name != "longitude" %}
+        <div>
+          <label class="block text-sm text-gray-700 font-medium mb-1">{{ field.label }}</label>
+          {{ field|add_class:"w-full p-2 border rounded-md" }}
+          {% if field.help_text %}
+            <small class="text-gray-500">{{ field.help_text }}</small>
+          {% endif %}
+          {% for error in field.errors %}
+            <p class="text-red-500 text-sm mt-1">{{ error }}</p>
+          {% endfor %}
+        </div>
+      {% else %}
+        {{ field.as_hidden }}
+      {% endif %}
+    {% endfor %}
+
+    <!-- خريطة الموقع -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-2">📍 حدد موقع العقار على الخريطة</label>
+      <div id="map" class="w-full h-64 rounded-md border"></div>
+    </div>
+
+    <div class="flex justify-end pt-4">
+      <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md">
+        💾 حفظ العقار
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- Leaflet.js -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const latInput = document.getElementById("id_latitude");
+    const lngInput = document.getElementById("id_longitude");
+
+    // fallback على الرياض
+    let defaultLat = 24.7136;
+    let defaultLng = 46.6753;
+
+    // حاول الحصول على موقع المستخدم
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function (position) {
+        defaultLat = position.coords.latitude;
+        defaultLng = position.coords.longitude;
+        initializeMap(defaultLat, defaultLng);
+      }, function () {
+        initializeMap(defaultLat, defaultLng); // فشل: استخدم الرياض
+      });
+    } else {
+      initializeMap(defaultLat, defaultLng); // لا يدعم الموقع
+    }
+
+    function initializeMap(lat, lng) {
+      const map = L.map('map').setView([lat, lng], 13);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(map);
+
+      const marker = L.marker([lat, lng], { draggable: true }).addTo(map);
+
+      // حفظ الإحداثيات
+      latInput.value = lat.toFixed(6);
+      lngInput.value = lng.toFixed(6);
+
+      marker.on('dragend', function (e) {
+        const latLng = marker.getLatLng();
+        latInput.value = latLng.lat.toFixed(6);
+        lngInput.value = latLng.lng.toFixed(6);
+      });
+
+      map.on('click', function (e) {
+        marker.setLatLng(e.latlng);
+        latInput.value = e.latlng.lat.toFixed(6);
+        lngInput.value = e.latlng.lng.toFixed(6);
+      });
+    }
+  });
+</script>
+{% endblock %}

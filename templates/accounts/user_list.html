@@ -1,0 +1,88 @@
+{% extends "accounts/base_admin.html" %}
+{% block title %}إدارة المستخدمين{% endblock %}
+
+{% block content %}
+<div class="bg-white shadow-lg rounded-xl p-6">
+  
+  <!-- Header -->
+  <div class="flex justify-between items-center border-b pb-4 mb-6">
+    <div>
+      <h1 class="text-2xl font-bold text-green-700 flex items-center gap-2">
+        <i class="fas fa-users"></i> إدارة المستخدمين
+      </h1>
+      <p class="text-sm text-gray-500 mt-1">إضافة، تعديل، وتعطيل أو حذف حسابات المستخدمين</p>
+    </div>
+    <a href="{% url 'accounts:user_create' %}" 
+       class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md flex items-center gap-2 text-sm shadow">
+      <i class="fas fa-user-plus"></i> إضافة مستخدم
+    </a>
+  </div>
+
+  <!-- Table -->
+  <div class="overflow-x-auto">
+    <table class="min-w-full text-sm text-center border rounded shadow-sm">
+      <thead class="bg-gray-100 text-gray-700 font-semibold">
+        <tr>
+          <th class="p-3 border">#</th>
+          <th class="p-3 border">الاسم</th>
+          <th class="p-3 border">الجوال</th>
+          <th class="p-3 border">الدور</th>
+          <th class="p-3 border">الحالة</th>
+          <th class="p-3 border">الخيارات</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in users %}
+        <tr class="hover:bg-gray-50 transition">
+          <td class="p-3 border">{{ forloop.counter }}</td>
+          <td class="p-3 border font-medium text-gray-800">{{ user.full_name }}</td>
+          <td class="p-3 border">{{ user.phone }}</td>
+          <td class="p-3 border">{{ user.get_role_display }}</td>
+          <td class="p-3 border">
+            {% if user.is_active %}
+              <span class="inline-block bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-semibold">مفعل</span>
+            {% else %}
+              <span class="inline-block bg-red-100 text-red-700 text-xs px-2 py-1 rounded-full font-semibold">موقوف</span>
+            {% endif %}
+          </td>
+          <td class="p-3 border">
+            <div class="flex justify-center gap-3">
+              <!-- تعديل -->
+              <a href="{% url 'accounts:user_edit' user.id %}" 
+                 title="تعديل المستخدم" 
+                 class="text-blue-600 hover:text-blue-800">
+                <i class="fas fa-pen-to-square text-lg"></i>
+              </a>
+
+              <!-- تفعيل/تعطيل -->
+              <a href="{% url 'accounts:toggle_user_status' user.id %}" 
+                 class="{% if user.is_active %}text-red-600{% else %}text-green-600{% endif %} hover:opacity-80"
+                 onclick="return confirm('هل أنت متأكد من تغيير حالة هذا المستخدم؟');"
+                 title="{% if user.is_active %}تعطيل{% else %}تفعيل{% endif %} المستخدم">
+                {% if user.is_active %}
+                  <i class="fas fa-user-slash text-lg"></i>
+                {% else %}
+                  <i class="fas fa-user-check text-lg"></i>
+                {% endif %}
+              </a>
+
+              <!-- حذف -->
+              <form method="post" action="{% url 'accounts:user_delete' user.id %}" onsubmit="return confirm('⚠️ هل أنت متأكد أنك تريد حذف هذا المستخدم؟');">
+                {% csrf_token %}
+                <button type="submit" title="حذف المستخدم" class="text-red-600 hover:text-red-800">
+                  <i class="fas fa-trash text-lg"></i>
+                </button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6" class="text-center p-4 text-gray-500">لا يوجد مستخدمون حاليًا.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

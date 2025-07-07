@@ -1,0 +1,59 @@
+{% extends 'accounts/base_admin.html' %}
+{% load widget_tweaks %}
+{% block title %}تعديل بيانات المستخدم{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow-md space-y-6">
+  <h2 class="text-xl font-bold text-blue-800 border-b pb-2">
+    <i class="fas fa-user-edit text-blue-600"></i> تعديل المستخدم: 
+    <span class="text-blue-600 font-semibold">{{ user_obj.full_name }}</span>
+  </h2>
+
+  <form method="post" class="space-y-4">
+    {% csrf_token %}
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label class="block mb-1 font-medium text-gray-700">الاسم الكامل</label>
+        {{ form.full_name|add_class:"w-full px-3 py-2 border rounded-md shadow-sm focus:ring focus:ring-blue-200" }}
+      </div>
+      <div>
+        <label class="block mb-1 font-medium text-gray-700">رقم الجوال</label>
+        {{ form.phone|add_class:"w-full px-3 py-2 border rounded-md shadow-sm focus:ring focus:ring-blue-200" }}
+      </div>
+      <div>
+        <label class="block mb-1 font-medium text-gray-700">البريد الإلكتروني</label>
+        {{ form.email|add_class:"w-full px-3 py-2 border rounded-md shadow-sm focus:ring focus:ring-blue-200" }}
+      </div>
+      <div>
+        <label class="block mb-1 font-medium text-gray-700">المدينة</label>
+        {{ form.city|add_class:"w-full px-3 py-2 border rounded-md shadow-sm focus:ring focus:ring-blue-200" }}
+      </div>
+      <div>
+        <label class="block mb-1 font-medium text-gray-700">الحي</label>
+        {{ form.district|add_class:"w-full px-3 py-2 border rounded-md shadow-sm focus:ring focus:ring-blue-200" }}
+      </div>
+      <div>
+        <label class="block mb-1 font-medium text-gray-700">رخصة فال</label>
+        {{ form.val_license|add_class:"w-full px-3 py-2 border rounded-md shadow-sm focus:ring focus:ring-blue-200" }}
+      </div>
+      <div>
+        <label class="block mb-1 font-medium text-gray-700">الدور</label>
+        {{ form.role|add_class:"w-full px-3 py-2 border rounded-md shadow-sm focus:ring focus:ring-blue-200" }}
+      </div>
+      <div class="flex items-center gap-2 mt-6">
+        <label class="font-medium text-gray-700">الحالة:</label>
+        {{ form.is_active }}
+        <span class="text-sm text-gray-500">({{ form.is_active.value|yesno:"مفعل,موقوف" }})</span>
+      </div>
+    </div>
+
+    <div class="pt-6 text-end">
+      <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md shadow inline-flex items-center gap-2">
+        <i class="fas fa-save"></i>
+        حفظ التعديلات
+      </button>
+    </div>
+  </form>
+</div>
+{% endblock %}

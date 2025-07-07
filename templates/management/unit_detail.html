@@ -1,0 +1,140 @@
+{% extends "accounts/base_owner.html" %}
+{% block title %}📦 تفاصيل الوحدة{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 py-8 space-y-10">
+
+  <!-- عنوان الوحدة وزر تعديل / حذف -->
+  <div class="flex justify-between items-center border-b pb-4">
+    <div>
+      <h1 class="text-2xl font-bold text-green-700">📦 تفاصيل الوحدة {{ unit.unit_number }}</h1>
+      <p class="text-sm text-gray-500">العقار: {{ unit.property.name }} - {{ unit.property.city }}/{{ unit.property.district }}</p>
+    </div>
+    <div class="flex gap-2">
+      <a href="{% url 'management:edit_unit' unit.pk %}"
+         class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm rounded shadow">
+        ✏️ تعديل الوحدة
+      </a>
+      <form action="{% url 'management:delete_unit' unit.pk %}" method="post" onsubmit="return confirm('هل أنت متأكد من حذف الوحدة؟');">
+        {% csrf_token %}
+        <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 text-sm rounded shadow">
+          🗑️ حذف الوحدة
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- بيانات الوحدة -->
+  <div class="bg-white border rounded-xl shadow p-6 space-y-4 text-sm text-gray-700">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <p><strong>🔢 رقم الوحدة:</strong> {{ unit.unit_number }}</p>
+      <p><strong>📏 المساحة:</strong> {{ unit.area }} م²</p>
+      <p><strong>💰 السعر:</strong> {{ unit.price }} ريال</p>
+      {% if unit.location %}<p><strong>📍 الموقع:</strong> {{ unit.location }}</p>{% endif %}
+      <p><strong>📌 الحالة:</strong> {{ unit.get_status_display }}</p>
+      {% if unit.assigned_to %}<p><strong>👤 الموظف المسؤول:</strong> {{ unit.assigned_to.get_full_name }}</p>{% endif %}
+      {% if unit.notes %}<p class="sm:col-span-2"><strong>📝 ملاحظات:</strong> {{ unit.notes }}</p>{% endif %}
+      <p><strong>📅 تاريخ الإضافة:</strong> {{ unit.created_at|date:"Y-m-d" }}</p>
+    </div>
+  </div>
+
+  <!-- عقد الإيجار -->
+  <div class="bg-white border rounded-xl shadow p-6">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-lg font-bold text-green-600">📄 عقد الإيجار</h2>
+      {% if rental_info %}
+        <div class="flex gap-3">
+          <a href="{% url 'management:edit_rental_info' unit.id %}" class="text-blue-600 hover:underline text-sm">✏️ تعديل</a>
+          <form method="post" action="{% url 'management:delete_rental_info' unit.id %}" onsubmit="return confirm('هل تريد حذف عقد الإيجار؟');">
+            {% csrf_token %}
+            <button type="submit" class="text-red-600 hover:underline text-sm">🗑️ حذف</button>
+          </form>
+        </div>
+      {% else %}
+        <a href="{% url 'management:add_rental_info' unit.pk %}" class="text-sm text-green-700 hover:underline">➕ إضافة عقد</a>
+      {% endif %}
+    </div>
+    {% if rental_info %}
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-700">
+        <p><strong>👤 المستأجر:</strong> {{ rental_info.tenant_name }}</p>
+        <p><strong>💵 مبلغ الإيجار:</strong> {{ rental_info.amount }} ريال</p>
+        <p><strong>🗓️ من:</strong> {{ rental_info.start_date }}</p>
+        <p><strong>🗓️ إلى:</strong> {{ rental_info.end_date }}</p>
+      </div>
+    {% else %}
+      <p class="text-sm text-gray-500">لا يوجد عقد إيجار مسجل لهذه الوحدة.</p>
+    {% endif %}
+  </div>
+
+  <!-- سجل التحديثات والمصروفات -->
+  <div class="bg-white border rounded-xl shadow p-6">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-lg font-bold text-green-600">📋 سجل التحديثات / المصروفات</h2>
+      <a href="{% url 'management:add_unit_update' unit.pk %}" class="text-sm text-green-700 hover:underline">➕ تسجيل مصروف</a>
+    </div>
+    {% if updates %}
+      <ul class="divide-y divide-gray-200 text-sm text-gray-700">
+        {% for update in updates %}
+          <li class="py-3 flex flex-col sm:flex-row sm:justify-between sm:items-center">
+            <div>
+              <strong>{{ update.update_type }}</strong>
+              <span class="text-gray-500">- {{ update.date }}</span>
+            </div>
+            <div class="flex gap-3 mt-1 sm:mt-0">
+              {% if update.amount %}
+                <span class="text-red-600 font-bold">{{ update.amount }} ريال</span>
+              {% endif %}
+              {% if update.attachment %}
+                <a href="{{ update.attachment.url }}" target="_blank" class="text-blue-600 hover:underline">📎 تحميل المرفق</a>
+              {% endif %}
+              <a href="{% url 'management:edit_unit_update' update.pk %}" class="text-blue-600 text-sm hover:underline">✏️</a>
+              <form method="post" action="{% url 'management:delete_unit_update' update.pk %}" class="inline-block"
+                    onsubmit="return confirm('هل تريد حذف هذا السجل؟');">
+                {% csrf_token %}
+                <button type="submit" class="text-red-600 text-sm hover:underline bg-transparent border-0">🗑️</button>
+              </form>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="text-sm text-gray-500">لا توجد تحديثات أو مصروفات مسجلة لهذه الوحدة.</p>
+    {% endif %}
+  </div>
+
+  <!-- الصيانات المجدولة -->
+  <div class="bg-white border rounded-xl shadow p-6">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-lg font-bold text-green-600">🛠️ الصيانات المجدولة</h2>
+      {% if user.is_staff %}
+        <a href="{% url 'management:schedule_maintenance' unit.pk %}" class="text-sm text-green-700 hover:underline">➕ تسجيل صيانة</a>
+      {% endif %}
+    </div>
+    {% if scheduled_maintenances %}
+      <ul class="divide-y divide-gray-200 text-sm text-gray-700">
+        {% for maintenance in scheduled_maintenances %}
+          <li class="py-3 flex flex-col sm:flex-row sm:justify-between sm:items-center">
+            <div>
+              <strong>{{ maintenance.description }}</strong>
+              <span class="text-gray-500">- {{ maintenance.date }}</span>
+            </div>
+            {% if user.is_staff %}
+              <div class="flex gap-3 mt-1 sm:mt-0">
+                <a href="{% url 'management:edit_scheduled_maintenance' maintenance.pk %}" class="text-blue-600 text-sm hover:underline">✏️</a>
+                <form method="post" action="{% url 'management:delete_scheduled_maintenance' maintenance.pk %}" class="inline-block"
+                      onsubmit="return confirm('هل تريد حذف هذه الصيانة؟');">
+                  {% csrf_token %}
+                  <button type="submit" class="text-red-600 text-sm hover:underline bg-transparent border-0">🗑️</button>
+                </form>
+              </div>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="text-sm text-gray-500">لا توجد صيانات مجدولة حالياً.</p>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}

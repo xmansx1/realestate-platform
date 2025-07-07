@@ -1,0 +1,20 @@
+**`navbar.html`**
+```html
+<nav class="bg-white shadow-md fixed top-0 inset-x-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between h-16 items-center">
+      <a href="/" class="text-green-700 font-bold text-xl">📍 المنصة العقارية</a>
+
+      <div class="space-x-4 rtl:space-x-reverse">
+        <a href="/" class="text-gray-700 hover:text-green-600">الرئيسية</a>
+        <a href="{% url 'properties:list' %}" class="text-gray-700 hover:text-green-600">العقارات</a>
+        <a href="{% url 'requests:general_request' %}" class="text-gray-700 hover:text-green-600">
+  <i class="fas fa-file-alt"></i> طلب عقار
+</a>
+
+        <a href="{% url 'accounts:login' %}" class="text-gray-700 hover:text-green-600">تسجيل الدخول</a>
+      </div>
+    </div>
+  </div>
+</nav>
+<div class="h-16"></div> <!-- Spacer after navbar -->

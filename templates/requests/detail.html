@@ -1,0 +1,39 @@
+{% extends "accounts/base_admin.html" %}
+{% block title %}تفاصيل الطلب العقاري{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto bg-white shadow p-6 rounded-xl space-y-6">
+  <h2 class="text-xl font-bold text-green-700 border-b pb-4">📄 تفاصيل الطلب العقاري</h2>
+
+  <div class="space-y-2 text-sm text-gray-700">
+    <p><strong>اسم الزائر:</strong> {{ request_obj.full_name }}</p>
+    <p><strong>رقم الجوال:</strong> {{ request_obj.phone_number }}</p>
+    <p><strong>العقار:</strong> {{ request_obj.property.title }}</p>
+    <p><strong>الرسالة:</strong> {{ request_obj.message|default:"---" }}</p>
+    <p><strong>الحالة الحالية:</strong> 
+      {% if request_obj.status == 'new' %}
+        <span class="text-blue-600 font-semibold">جديد</span>
+      {% elif request_obj.status == 'reviewed' %}
+        <span class="text-yellow-600 font-semibold">تم المراجعة</span>
+      {% elif request_obj.status == 'contacted' %}
+        <span class="text-green-600 font-semibold">تم التواصل</span>
+      {% endif %}
+    </p>
+    <p><strong>تاريخ الإرسال:</strong> {{ request_obj.created_at|date:"Y-m-d H:i" }}</p>
+  </div>
+
+  <!-- نموذج تغيير الحالة -->
+  <form method="post" class="mt-6 border-t pt-4">
+    {% csrf_token %}
+    <label for="status" class="block text-sm font-medium text-gray-800 mb-1">تحديث الحالة:</label>
+    <select name="status" id="status" class="w-full p-2 border rounded-md text-sm">
+      <option value="new" {% if request_obj.status == 'new' %}selected{% endif %}>جديد</option>
+      <option value="reviewed" {% if request_obj.status == 'reviewed' %}selected{% endif %}>تم المراجعة</option>
+      <option value="contacted" {% if request_obj.status == 'contacted' %}selected{% endif %}>تم التواصل</option>
+    </select>
+    <button type="submit" class="mt-4 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md">
+      حفظ التغييرات
+    </button>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,119 @@
+{% extends "accounts/base_admin.html" %}
+{% block title %}لوحة تحكم المشرف{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 py-6">
+
+  <!-- العنوان -->
+  <div class="flex justify-between items-center bg-white shadow-sm rounded-xl px-6 py-4 mb-8 border">
+    <div>
+      <h1 class="text-2xl font-bold text-green-700">👨‍💼 لوحة تحكم المشرف</h1>
+      <p class="text-sm text-gray-500 mt-1">مرحبًا، <span class="font-semibold">{{ request.user.full_name }}</span> 👋</p>
+    </div>
+    <div>
+      <a href="{% url 'accounts:admin_logout' %}" class="text-red-600 hover:text-red-800 font-semibold text-sm flex items-center gap-1">
+        <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+      </a>
+    </div>
+  </div>
+
+  <!-- فلترة بالتاريخ -->
+  <form method="get" class="flex flex-wrap gap-4 items-end mb-6">
+    <div>
+      <label class="text-sm text-gray-600">من تاريخ:</label>
+      <input type="date" name="start" value="{{ start_date }}" class="border rounded p-2 text-sm w-full" />
+    </div>
+    <div>
+      <label class="text-sm text-gray-600">إلى تاريخ:</label>
+      <input type="date" name="end" value="{{ end_date }}" class="border rounded p-2 text-sm w-full" />
+    </div>
+    <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm">🔍 تصفية</button>
+    <a href="{% url 'dashboard:export_excel' %}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm flex items-center gap-1">
+      <i class="fas fa-file-excel"></i> تصدير Excel
+    </a>
+  </form>
+
+  <!-- إحصائيات الطلبات -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+    <div class="bg-white border rounded-xl p-5 text-center shadow-sm">
+      <h3 class="text-sm text-gray-500">📦 إجمالي الطلبات العقارية</h3>
+      <p class="text-2xl font-bold text-green-700 mt-1">{{ stats.total_requests }}</p>
+    </div>
+    {% for item in stats.requests_by_status %}
+    <div class="bg-white border rounded-xl p-5 text-center shadow-sm">
+      <h3 class="text-sm text-gray-500">{{ item.status }}</h3>
+      <p class="text-2xl font-bold text-blue-600 mt-1">{{ item.total }}</p>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- إحصائيات الصفقات -->
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
+    <div class="bg-white border rounded-xl p-5 text-center shadow-sm">
+      <h3 class="text-sm text-gray-500">📈 عدد الصفقات المنفذة</h3>
+      <p class="text-2xl font-bold text-green-700 mt-1">{{ stats.total_deals }}</p>
+    </div>
+    <div class="bg-white border rounded-xl p-5 text-center shadow-sm">
+      <h3 class="text-sm text-gray-500">💰 إجمالي العمولات</h3>
+      <p class="text-2xl font-bold text-yellow-600 mt-1">{{ stats.total_commission|floatformat:"0" }} ريال</p>
+    </div>
+    <div class="bg-white border rounded-xl p-5 text-center shadow-sm">
+      <h3 class="text-sm text-gray-500">🏛️ حصة المنصة</h3>
+      <p class="text-2xl font-bold text-purple-700 mt-1">{{ stats.platform_share|floatformat:"0" }} ريال</p>
+    </div>
+  </div>
+
+  <!-- روابط الإدارة -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+    <a href="{% url 'accounts:user_list' %}" class="bg-white rounded-xl border hover:shadow-lg transition p-5 flex items-center gap-4">
+      <div class="bg-green-100 text-green-700 p-3 rounded-full text-xl"><i class="fas fa-users"></i></div>
+      <div>
+        <h2 class="text-lg font-bold text-gray-800">إدارة المستخدمين</h2>
+        <p class="text-sm text-gray-500">إضافة وتفعيل وتعطيل الحسابات</p>
+      </div>
+    </a>
+
+    <a href="{% url 'properties:admin_list' %}" class="bg-white rounded-xl border hover:shadow-lg transition p-5 flex items-center gap-4">
+      <div class="bg-blue-100 text-blue-700 p-3 rounded-full text-xl"><i class="fas fa-building"></i></div>
+      <div>
+        <h2 class="text-lg font-bold text-gray-800">إدارة العقارات</h2>
+        <p class="text-sm text-gray-500">عرض وتعديل العقارات المسجلة</p>
+      </div>
+    </a>
+
+    <a href="{% url 'requests:admin_list' %}" class="bg-white rounded-xl border hover:shadow-lg transition p-5 flex items-center gap-4">
+      <div class="bg-yellow-100 text-yellow-700 p-3 rounded-full text-xl"><i class="fas fa-file-alt"></i></div>
+      <div>
+        <h2 class="text-lg font-bold text-gray-800">الطلبات العقارية</h2>
+        <p class="text-sm text-gray-500">مراجعة الطلبات الواردة من الزوار</p>
+      </div>
+    </a>
+
+    <a href="#" class="bg-white rounded-xl border hover:shadow-lg transition p-5 flex items-center gap-4">
+      <div class="bg-purple-100 text-purple-700 p-3 rounded-full text-xl"><i class="fas fa-chart-line"></i></div>
+      <div>
+        <h2 class="text-lg font-bold text-gray-800">التقارير والإحصائيات</h2>
+        <p class="text-sm text-gray-500">تحليل الأداء والمتابعة المالية</p>
+      </div>
+    </a>
+
+    <a href="{% url 'notifications:notification_list' %}" class="bg-white rounded-xl border hover:shadow-lg transition p-5 flex items-center gap-4">
+      <div class="bg-red-100 text-red-700 p-3 rounded-full text-xl"><i class="fas fa-bell"></i></div>
+      <div>
+        <h2 class="text-lg font-bold text-gray-800">التنبيهات</h2>
+        <p class="text-sm text-gray-500">عرض آخر التنبيهات وحالة النظام</p>
+      </div>
+    </a>
+
+    <a href="#" class="bg-white rounded-xl border hover:shadow-lg transition p-5 flex items-center gap-4">
+      <div class="bg-gray-100 text-gray-700 p-3 rounded-full text-xl"><i class="fas fa-cogs"></i></div>
+      <div>
+        <h2 class="text-lg font-bold text-gray-800">إعدادات النظام</h2>
+        <p class="text-sm text-gray-500">ضبط صلاحيات الوصول والخيارات العامة</p>
+      </div>
+    </a>
+
+  </div>
+</div>
+{% endblock %}

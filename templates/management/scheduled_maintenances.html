@@ -1,0 +1,43 @@
+{% extends "accounts/base_admin.html" %}
+{% block title %}🧰 الصيانة المجدولة للوحدة{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 py-8 space-y-10">
+
+  <!-- العنوان وزر تسجيل صيانة جديدة -->
+  <div class="flex justify-between items-center border-b pb-4">
+    <div>
+      <h1 class="text-2xl font-bold text-green-700">🧰 الصيانة المجدولة - الوحدة {{ unit.unit_number }}</h1>
+      <p class="text-sm text-gray-500">العقار: {{ unit.property.name }} - {{ unit.property.city }}/{{ unit.property.district }}</p>
+    </div>
+    <a href="{% url 'management:schedule_maintenance' unit.pk %}" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 text-sm rounded shadow">
+      ➕ تسجيل صيانة جديدة
+    </a>
+  </div>
+
+  <!-- قائمة الصيانات -->
+  {% if maintenances %}
+    <div class="bg-white border rounded-xl shadow p-6">
+      <ul class="divide-y divide-gray-200 text-sm text-gray-700">
+        {% for maintenance in maintenances %}
+          <li class="py-4 flex flex-col sm:flex-row sm:justify-between sm:items-center">
+            <div>
+              <p><strong>🛠️ الوصف:</strong> {{ maintenance.description }}</p>
+              <p class="text-gray-500">📅 التاريخ: {{ maintenance.date }}</p>
+              {% if maintenance.notes %}
+                <p class="text-gray-600 text-sm mt-1">📝 ملاحظات: {{ maintenance.notes }}</p>
+              {% endif %}
+            </div>
+            {% if maintenance.attachment %}
+              <a href="{{ maintenance.attachment.url }}" target="_blank" class="text-blue-600 hover:underline mt-2 sm:mt-0">📎 تحميل المرفق</a>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% else %}
+    <p class="text-sm text-gray-500">🚫 لا توجد صيانات مجدولة لهذه الوحدة حتى الآن.</p>
+  {% endif %}
+
+</div>
+{% endblock %}

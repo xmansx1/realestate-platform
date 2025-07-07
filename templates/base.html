@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}منصة العقارات{% endblock %}</title>
+
+  <!-- TailwindCSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font Awesome -->
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+  <!-- خطوط وإعدادات إضافية -->
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Cairo', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 text-gray-900">
+
+  <!-- شريط التنقل -->
+  {% include 'navbar.html' %}
+
+  <!-- الرسائل المنبثقة -->
+  {% if messages %}
+    <div id="message-container" class="container mx-auto px-4 mt-6">
+      {% for message in messages %}
+        <div class="mb-4 px-4 py-3 rounded-md shadow text-white font-medium transition-all duration-300 ease-in-out
+                    {% if message.tags == 'success' %} bg-green-600
+                    {% elif message.tags == 'error' %} bg-red-600
+                    {% else %} bg-gray-700 {% endif %}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+    <script>
+      setTimeout(function() {
+        const container = document.getElementById('message-container');
+        if (container) {
+          container.style.opacity = '0';
+          container.style.transition = 'opacity 0.8s ease';
+          setTimeout(() => container.remove(), 1000);
+        }
+      }, 4000);
+    </script>
+  {% endif %}
+
+  <!-- المحتوى الأساسي -->
+  <main class="container mx-auto px-4 py-8">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- التذييل -->
+  {% include 'footer.html' %}
+
+</body>
+</html>

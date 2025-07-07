@@ -1,0 +1,58 @@
+{% extends "accounts/base_admin.html" %}
+{% block title %}الطلبات العقارية{% endblock %}
+
+{% block content %}
+<div class="bg-white shadow p-6 rounded-xl space-y-6">
+
+  <!-- العنوان -->
+  <div class="border-b pb-4">
+    <h1 class="text-2xl font-bold text-green-700">📄 الطلبات العقارية</h1>
+    <p class="text-sm text-gray-500 mt-1">مراجعة الطلبات المقدمة من الزوار لكل عقار</p>
+  </div>
+
+  <!-- جدول الطلبات -->
+  <div class="overflow-x-auto">
+    <table class="min-w-full text-right border rounded-lg overflow-hidden">
+      <thead class="bg-gray-100 text-gray-700 text-sm">
+        <tr>
+          <th class="px-4 py-2">#</th>
+          <th class="px-4 py-2">اسم الزائر</th>
+          <th class="px-4 py-2">الجوال</th>
+          <th class="px-4 py-2">العقار</th>
+          <th class="px-4 py-2">الحالة</th>
+          <th class="px-4 py-2">تاريخ الإرسال</th>
+          <th class="px-4 py-2">عرض</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for req in requests %}
+        <tr class="border-t text-sm hover:bg-gray-50">
+          <td class="px-4 py-2">{{ forloop.counter }}</td>
+          <td class="px-4 py-2">{{ req.full_name }}</td>
+          <td class="px-4 py-2">{{ req.phone_number }}</td>
+          <td class="px-4 py-2">{{ req.property.title }}</td>
+          <td class="px-4 py-2">
+            {% if req.status == 'new' %}
+              <span class="text-blue-600 font-semibold">جديد</span>
+            {% elif req.status == 'reviewed' %}
+              <span class="text-yellow-600 font-semibold">تم المراجعة</span>
+            {% elif req.status == 'contacted' %}
+              <span class="text-green-600 font-semibold">تم التواصل</span>
+            {% endif %}
+          </td>
+          <td class="px-4 py-2">{{ req.created_at|date:"Y-m-d H:i" }}</td>
+          <td class="px-4 py-2">
+            <a href="{% url 'requests:admin_detail' req.id %}" class="text-green-700 hover:underline">🔍 عرض</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="7" class="text-center py-4 text-gray-500">لا توجد طلبات حالياً.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+</div>
+{% endblock %}

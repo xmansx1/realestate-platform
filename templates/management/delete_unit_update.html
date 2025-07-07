@@ -1,0 +1,33 @@
+{% extends "accounts/base_owner.html" %}
+{% block title %}🗑️ حذف التحديث / المصروف{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto px-4 py-8 space-y-6">
+
+  <!-- العنوان -->
+  <div class="border-b pb-4">
+    <h1 class="text-2xl font-bold text-red-700">🗑️ تأكيد حذف التحديث / المصروف</h1>
+    <p class="text-sm text-gray-600 mt-1">
+      هل أنت متأكد أنك تريد حذف التحديث <strong class="text-black">{{ update.update_type }}</strong>؟
+      لا يمكن التراجع عن هذه العملية.
+    </p>
+  </div>
+
+  <!-- نموذج التأكيد -->
+  <form method="POST" class="bg-white border p-6 rounded-xl shadow space-y-4">
+    {% csrf_token %}
+
+    <div class="flex items-center justify-between">
+      <a href="{% url 'management:unit_detail' unit.pk %}"
+         class="text-sm text-gray-600 hover:text-gray-800 underline">
+        ← العودة لتفاصيل الوحدة
+      </a>
+      <button type="submit"
+              class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-md text-sm font-medium shadow">
+        ✅ نعم، حذف التحديث
+      </button>
+    </div>
+  </form>
+
+</div>
+{% endblock %}

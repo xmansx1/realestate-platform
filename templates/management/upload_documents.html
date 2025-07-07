@@ -1,0 +1,23 @@
+{% extends "accounts/base_owner.html" %}
+{% block title %}رفع مستندات العقار{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto py-6 px-4 bg-white rounded-xl shadow">
+  <h2 class="text-xl font-bold text-green-700 mb-4">📎 رفع مستندات للعقار: {{ property.name }}</h2>
+
+  <form method="POST" enctype="multipart/form-data" class="space-y-4">
+    {% csrf_token %}
+    {% for field in form %}
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">{{ field.label }}</label>
+        {{ field }}
+        {% if field.help_text %}
+          <p class="text-xs text-gray-500">{{ field.help_text }}</p>
+        {% endif %}
+      </div>
+    {% endfor %}
+
+    <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">حفظ المستندات</button>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "accounts/base_admin.html" %}
+{% block title %}لوحة التحكم{% endblock %}
+
+{% block content %}
+<h2 class="text-2xl font-bold text-green-700 mb-6 flex items-center gap-2">
+  <i class="fas fa-chart-line"></i> لوحة التحكم
+</h2>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+  
+  <!-- عدد الطلبات الكلي -->
+  <div class="bg-white shadow rounded-lg p-5">
+    <h3 class="text-sm text-gray-500">عدد الطلبات العقارية</h3>
+    <p class="text-3xl font-bold text-green-700">{{ total_requests }}</p>
+  </div>
+
+  <!-- عدد الطلبات الجديدة -->
+  <div class="bg-white shadow rounded-lg p-5">
+    <h3 class="text-sm text-gray-500">الطلبات الجديدة</h3>
+    <p class="text-3xl font-bold text-blue-600">{{ new_requests }}</p>
+  </div>
+
+  <!-- عدد العقارات -->
+  <div class="bg-white shadow rounded-lg p-5">
+    <h3 class="text-sm text-gray-500">إجمالي العقارات</h3>
+    <p class="text-3xl font-bold text-gray-800">{{ total_properties }}</p>
+  </div>
+
+  <!-- العقارات النشطة -->
+  <div class="bg-white shadow rounded-lg p-5">
+    <h3 class="text-sm text-gray-500">عقارات نشطة</h3>
+    <p class="text-3xl font-bold text-green-600">{{ active_properties }}</p>
+  </div>
+
+  <!-- العقارات المؤرشفة -->
+  <div class="bg-white shadow rounded-lg p-5">
+    <h3 class="text-sm text-gray-500">عقارات مؤرشفة</h3>
+    <p class="text-3xl font-bold text-red-500">{{ archived_properties }}</p>
+  </div>
+
+</div>
+{% endblock %}

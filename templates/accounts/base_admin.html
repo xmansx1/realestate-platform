@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>{% block title %}لوحة الإدارة{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    body {
+      font-family: "Cairo", sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-white shadow-md py-4 px-6">
+    <div class="flex justify-between items-center">
+      <h1 class="text-xl font-bold text-green-700">منصة إدارة الأملاك</h1>
+
+      <div class="flex items-center gap-6">
+        <!-- Notifications Icon -->
+        <a href="{% url 'notifications:notification_list' %}
+" class="relative text-gray-700 hover:text-green-600">
+          <i class="fas fa-bell text-xl"></i>
+          {% if unread_notifications > 0 %}
+            <span class="absolute -top-2 -right-2 inline-flex items-center justify-center px-2 py-0.5 text-xs font-bold text-white bg-red-600 rounded-full">
+              {{ unread_notifications }}
+            </span>
+          {% endif %}
+        </a>
+
+        <!-- Navigation Links -->
+        <nav class="space-x-4 space-x-reverse text-sm">
+          <a href="{% url 'accounts:admin_dashboard' %}" class="text-gray-700 hover:text-green-600">لوحة التحكم</a>
+          <a href="{% url 'accounts:user_list' %}" class="text-gray-700 hover:text-green-600">المستخدمون</a>
+          <a href="{% url 'properties:admin_list' %}" class="text-gray-700 hover:text-green-600">العقارات</a>
+          <a href="{% url 'requests:admin_list' %}" class="text-gray-700 hover:text-green-600">الطلبات</a>
+          <a href="#" class="text-gray-700 hover:text-green-600">التقارير</a>
+          <a href="{% url 'accounts:admin_logout' %}" class="text-red-600 hover:text-red-800">خروج</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page content -->
+  <main class="flex-1 container mx-auto px-4 py-6">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white text-center text-sm text-gray-500 py-4 border-t">
+    &copy; 2025 جميع الحقوق محفوظة لمنصة إدارة الأملاك
+  </footer>
+
+</body>
+</html>
