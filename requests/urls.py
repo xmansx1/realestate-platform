@@ -1,8 +1,6 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from . import views
-from .views import agent_dashboard_view
-from .views import agent_available_requests_view
 
 from .views import (
     # إدارة المشرف
@@ -13,9 +11,9 @@ from .views import (
     create_request, create_general_request,
 
     # الوسيط العقاري
-    agent_add_property, available_requests_for_agent, reserve_request,
+    agent_dashboard_view, agent_add_property, available_requests_view, reserve_request,
     confirm_reserve_request, my_reserved_requests, cancel_reservation, execute_request,
-    execute_deal, my_deals_view,
+    execute_deal, my_deals_view, agent_reserved_requests_view,
 
     # الزائر / القائمة العامة
     broker_request_list,
@@ -38,26 +36,25 @@ urlpatterns = [
     path('general-request/', create_general_request, name='general_request'),
 
     # ✅ روابط الوسيط العقاري
-    path('agent/dashboard/', views.agent_dashboard_view, name='agent_dashboard'),
+    path('agent/dashboard/', agent_dashboard_view, name='agent_dashboard'),
     path('agent/add-property/', agent_add_property, name='agent_add_property'),
-    path('agent/available/', agent_available_requests_view, name='agent_available'),
-    path('agent/reserved/', views.agent_reserved_requests_view, name='reserved_requests'),
-    path('agent/add-property/', views.agent_add_property, name='agent_add_property'),
+    path('agent/available/', available_requests_view, name='available_requests'),
+    path('agent/reserved/', agent_reserved_requests_view, name='reserved_requests'),
     path('agent/confirm-reserve/<int:request_id>/', confirm_reserve_request, name='confirm_reserve'),
     path('agent/reserve/<int:pk>/', reserve_request, name='agent_reserve'),
     path('agent/my-requests/', my_reserved_requests, name='agent_reserved'),
     path('agent/my-deals/', my_deals_view, name='agent_deals'),
     path('agent/execute/<int:request_id>/', execute_deal, name='execute_deal'),
     path('agent/cancel-reservation/<int:request_id>/', cancel_reservation, name='cancel_reservation'),
-    path('admin/', views.admin_list, name='admin_list'),
+
     # ✅ روابط عامة (للطلبات)
     path('<int:request_id>/reserve/', reserve_request, name='reserve_request'),
     path('<int:request_id>/execute/', execute_request, name='execute_request'),
     path('<int:request_id>/cancel/', cancel_reservation, name='cancel_reservation'),
-    path('agent/reserved/', views.reserved_requests_for_agent, name='agent_reserved'),
 
     # ✅ تسجيل الخروج
     path('logout/', auth_views.LogoutView.as_view(next_page='home'), name='logout'),
+    path('agent/available/', views.available_requests_view, name='agent_available'),
 
     # ✅ الصفحة الافتراضية
     path('', broker_request_list, name='list'),

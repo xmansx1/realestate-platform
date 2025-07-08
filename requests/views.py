@@ -158,21 +158,12 @@ def create_general_request(request):
     
     return render(request, 'requests/general_request.html', {'form': form})
 
-
-# ===== واجهة الوسيط (Agent) =====
-@user_passes_test(lambda u: u.is_authenticated and u.role == 'agent')
-
 @login_required
-@user_passes_test(is_agent)
-def available_requests_for_agent(request):
-    """عرض الطلبات المتاحة للوسيط (حالة مراجعة وغير محجوزة)."""
-    requests = RealEstateRequest.objects.filter(
-        status='reviewed',
-        reserved_by__isnull=True
-    )
-    return render(request, 'requests/agent/available_requests.html', {
-        'requests': requests
-    })
+@user_passes_test(lambda u: u.role == 'agent')
+def agent_available_requests_view(request):
+    requests = RealEstateRequest.objects.filter(is_approved=True, reserved_by__isnull=True)
+    return render(request, 'requests/agent/available_requests.html', {'requests': requests})
+
 
 @user_passes_test(lambda u: u.is_authenticated and u.role == 'agent')
 
@@ -397,40 +388,6 @@ def agent_dashboard_view(request):
 
     return render(request, 'requests/agent/dashboard.html', context)
 
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
-from .models import RealEstateRequest
-from django.contrib.auth.decorators import login_required, user_passes_test
-from django.shortcuts import render
-from .models import RealEstateRequest
- 
-@login_required
-@user_passes_test(is_agent)
-def agent_available_requests_view(request):
-    """
-    عرض الطلبات المتاحة للوسيط العقاري (المعتمدة فقط - لم يتم حجزها أو تنفيذها - وتم التواصل مع العميل)
-    مع دعم فلترة حسب نوع الطلب (purchase/rent/...).
-    """
-    purpose = request.GET.get('purpose')  # استرجاع الفلتر من الرابط
-
-    available_requests = RealEstateRequest.objects.filter(
-        is_approved=True,
-        reserved_by__isnull=True,
-        deal__isnull=True,
-        status='contacted'
-    )
-
-    if purpose:
-        available_requests = available_requests.filter(purpose=purpose)
-
-    available_requests = available_requests.order_by('-created_at')
-
-    context = {
-        'requests': available_requests,
-        'selected_purpose': purpose or '',  # تمرير القيمة المختارة للقالب
-    }
-
-    return render(request, 'requests/agent/available_requests.html', context)
 
 
 # views.py
@@ -445,12 +402,18 @@ def approve_request(request, request_id):
     messages.success(request, "تمت الموافقة على الطلب بنجاح.")
     return redirect('requests:admin_list')
 # views.py في عرض الوسطاء
-def available_requests(request):
+@login_required
+@user_passes_test(is_agent)
+def available_requests_view(request):
     requests = RealEstateRequest.objects.filter(
         is_approved=True,
         reserved_by__isnull=True
-    )
-    ...
+    ).order_by('-created_at')
+
+    context = {
+        'requests': requests,
+    }
+    return render(request, 'requests/agent/available_requests.html', context)
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render, redirect
 from properties.forms import PropertyForm
@@ -497,63 +460,34 @@ def admin_approve_request(request, pk):
     messages.success(request, "تم اعتماد الطلب بنجاح.")
     return redirect('requests:admin_list')
 
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
-from .models import RealEstateRequest
 
-@login_required
-def available_requests_for_agents(request):
-    if not request.user.is_authenticated or not request.user.role == 'agent':
-        return render(request, 'accounts/unauthorized.html', status=403)
 
-    requests_qs = RealEstateRequest.objects.filter(
-        is_approved=True,
-        reserved_by__isnull=True  # الطلب غير محجوز بعد
-    ).order_by('-created_at')
-
-    context = {
-        'requests': requests_qs,
-    }
-    return render(request, 'requests/agent/available_requests.html', context)
-
-@login_required
-def available_requests_for_agents(request):
-    if request.user.role != 'agent':
-        return render(request, 'accounts/unauthorized.html', status=403)
-
-    requests_qs = RealEstateRequest.objects.filter(
-        is_approved=True,
-        reserved_by__isnull=True
-    ).order_by('-created_at')
-
-    context = {
-        'requests': requests_qs,
-    }
-    return render(request, 'requests/agent/available_requests.html', context)
 
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
 
 @login_required
 def confirm_reserve_request(request, request_id):
-    real_estate_request = get_object_or_404(
-        RealEstateRequest,
-        id=request_id,
-        is_approved=True,
-        reserved_by__isnull=True
-    )
+    try:
+        real_estate_request = RealEstateRequest.objects.get(
+            id=request_id,
+            is_approved=True,
+            reserved_by__isnull=True
+        )
+    except RealEstateRequest.DoesNotExist:
+        messages.error(request, "الطلب غير متاح للحجز أو تم حجزه مسبقًا.")
+        return redirect('requests:available_requests')  # أو صفحة أخرى مناسبة
 
     if request.method == "POST":
         real_estate_request.reserved_by = request.user
         real_estate_request.save()
         messages.success(request, "تم حجز الطلب بنجاح.")
-        return redirect('requests:reserved_requests')  # أو الصفحة التي تريد التوجيه إليها بعد الحجز
+        return redirect('requests:reserved_requests')
 
     context = {
         'request_obj': real_estate_request
     }
     return render(request, 'requests/agent/confirm_reserve.html', context)
-
 @login_required
 def execute_deal(request, request_id):
     real_estate_request = get_object_or_404(
