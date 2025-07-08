@@ -1,0 +1,43 @@
+{% extends "accounts/base_admin.html" %}
+
+{% block title %}لوحة المالك{% endblock %}
+
+{% block content %}
+<div class="bg-white p-8 rounded-2xl shadow-xl space-y-10 max-w-6xl mx-auto">
+
+  <!-- عنوان ترحيبي -->
+  <div class="text-center space-y-2">
+    <h1 class="text-3xl font-extrabold text-green-700 flex items-center justify-center gap-2">
+      🏠 لوحة تحكم المالك
+    </h1>
+    <p class="text-gray-500 text-sm">مرحبًا {{ user.get_full_name|default:user.email }}، يمكنك من هنا إدارة كافة أملاكك ومتابعة تقاريرك بسهولة.</p>
+  </div>
+
+  <!-- البطاقات -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+    <!-- عقاراتي -->
+    <a href="{% url 'ownership:my_properties' %}" class="group bg-gradient-to-tr from-green-50 to-green-100 hover:from-green-100 hover:to-green-200 transition-all p-6 rounded-2xl shadow hover:shadow-md text-center space-y-2">
+      <div class="text-4xl">📋</div>
+      <h2 class="text-lg font-bold text-green-800 group-hover:underline">عقاراتي</h2>
+      <p class="text-sm text-gray-600">عرض وإدارة جميع العقارات التي تمتلكها</p>
+    </a>
+
+    <!-- التقارير -->
+    <a href="{% url 'ownership:owner_report' %}" class="group bg-gradient-to-tr from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 transition-all p-6 rounded-2xl shadow hover:shadow-md text-center space-y-2">
+      <div class="text-4xl">📊</div>
+      <h2 class="text-lg font-bold text-blue-800 group-hover:underline">تقارير الأملاك</h2>
+      <p class="text-sm text-gray-600">نظرة شاملة على الوحدات، الإيجارات، والمصروفات</p>
+    </a>
+
+    <!-- إضافة مستقبلية -->
+    <div class="bg-gray-100 p-6 rounded-2xl shadow text-center opacity-50">
+      <div class="text-4xl">🚧</div>
+      <h2 class="text-lg font-bold text-gray-600">قريبًا</h2>
+      <p class="text-sm text-gray-500">ميزات إضافية قيد التطوير</p>
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}

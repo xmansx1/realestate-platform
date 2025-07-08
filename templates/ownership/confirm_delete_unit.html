@@ -1,0 +1,16 @@
+{% extends "accounts/base_admin.html" %}
+{% block title %}تأكيد حذف الوحدة{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto bg-white p-6 rounded-xl shadow text-center space-y-4">
+
+  <h2 class="text-xl text-red-600 font-bold">⚠️ تأكيد حذف الوحدة</h2>
+  <p>هل أنت متأكد من رغبتك في حذف الوحدة: <strong>{{ unit.name }}</strong>؟</p>
+
+  <form method="POST">
+    {% csrf_token %}
+    <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md">نعم، حذف</button>
+    <a href="{% url 'ownership:unit_detail' unit.pk %}" class="ml-4 text-gray-600 hover:underline">إلغاء</a>
+  </form>
+</div>
+{% endblock %}

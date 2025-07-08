@@ -18,9 +18,9 @@
            {% elif user.is_staff %}
             <a href="{% url 'admin_dashboard' %}" class="text-gray-700 hover:text-green-600">لوحة المشرف</a>
           {% elif user.role == 'agent' %}
-            <a href="{% url 'agent_dashboard' %}" class="text-gray-700 hover:text-green-600">لوحة الوسيط</a>
-          {% elif user.role == 'owner' %}
-            <a href="{% url 'owner_dashboard' %}" class="text-gray-700 hover:text-green-600">لوحة المالك</a>
+           {% elif user.role == 'owner' %}
+            <a href="{% url 'ownership:owner_dashboard' %}" class="text-gray-700 hover:text-green-600">لوحة المالك</a>
+
           {% endif %}
 
           <span class="text-sm text-gray-600 hidden sm:inline-block">

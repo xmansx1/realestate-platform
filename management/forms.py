@@ -1,28 +1,26 @@
 from django import forms
-from .models import Property
-from .models import Unit
-from .models import UpdateLog
-from .models import ScheduledMaintenance
+from .models import (
+    Property, Unit, RentalContract, UpdateLog,
+    ScheduledMaintenance, PropertyDocument,
+    Expense
+)
 
-class PropertyDocumentForm(forms.ModelForm):
+
+# 🔹 نموذج العقار
+class PropertyForm(forms.ModelForm):
     class Meta:
         model = Property
-        fields = [
-            'deed_document',
-            'insurance_document',
-            'sketch_document',
-            'agency_document',
-            'other_document',
-        ]
+        exclude = ['owner', 'is_approved']
         labels = {
-            'deed_document': 'صك العقار',
-            'insurance_document': 'وثيقة التأمين',
-            'sketch_document': 'الكروكي',
-            'agency_document': 'وكالة شرعية',
-            'other_document': 'مستند آخر',
+            'name': 'اسم العقار',
+            'city': 'المدينة',
+            'district': 'الحي',
+            'latitude': 'خط العرض',
+            'longitude': 'خط الطول',
         }
 
-class PropertyDocumentsForm(forms.ModelForm):
+# 🔹 مستندات ضمن نموذج العقار (مباشرة)
+class InlinePropertyDocumentForm(forms.ModelForm):
     class Meta:
         model = Property
         fields = [
@@ -40,18 +38,47 @@ class PropertyDocumentsForm(forms.ModelForm):
             'other_document': 'مستند آخر',
         }
 
+# 🔹 مستندات خارجية مرفوعة يدويًا
+class PropertyDocumentForm(forms.ModelForm):
+    class Meta:
+        model = PropertyDocument
+        fields = ['file', 'description']
+        widgets = {
+            'description': forms.TextInput(attrs={
+                'placeholder': 'وصف المستند (اختياري)',
+                'class': 'w-full p-2 border rounded-md'
+            }),
+            'file': forms.ClearableFileInput(attrs={
+                'class': 'w-full p-2 border rounded-md'
+            }),
+        }
+
+# 🔹 نموذج الوحدة
 class UnitForm(forms.ModelForm):
     class Meta:
         model = Unit
-        fields = ['unit_number', 'area', 'price', 'location', 'status']
-        labels = {
-            'unit_number': 'رقم الوحدة',
-            'area': 'المساحة (م²)',
-            'price': 'المبلغ',
-            'location': 'الموقع داخل العقار',
-            'status': 'حالة الوحدة',
-        }   
-        
+        exclude = ['property', 'created_at']
+        widgets = {
+            'notes': forms.Textarea(attrs={'rows': 3}),
+        }
+
+# 🔹 تحديث بيانات الوحدة (وليس سجل التحديثات)
+class UnitUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Unit
+        fields = ['unit_number', 'area', 'price', 'location', 'status', 'notes']
+
+# 🔹 عقد الإيجار
+class RentalContractForm(forms.ModelForm):
+    class Meta:
+        model = RentalContract
+        exclude = ['unit', 'created_at']
+        widgets = {
+            'start_date': forms.DateInput(attrs={'type': 'date'}),
+            'end_date': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+# 🔹 التحديثات / المصروفات على الوحدة
 class UpdateLogForm(forms.ModelForm):
     class Meta:
         model = UpdateLog
@@ -62,7 +89,20 @@ class UpdateLogForm(forms.ModelForm):
             'amount': 'المبلغ (اختياري)',
             'attachment': 'مرفق (اختياري)'
         }
-        
+        widgets = {
+            'date': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+# 🔹 المصروفات (نموذج مستقل)
+class ExpenseForm(forms.ModelForm):
+    class Meta:
+        model = Expense
+        fields = ['title', 'amount', 'date', 'notes']
+        widgets = {
+            'date': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+# 🔹 صيانة مجدولة
 class ScheduledMaintenanceForm(forms.ModelForm):
     class Meta:
         model = ScheduledMaintenance
@@ -71,35 +111,4 @@ class ScheduledMaintenanceForm(forms.ModelForm):
             'maintenance_type': 'نوع الصيانة',
             'scheduled_date': 'تاريخ الصيانة',
             'description': 'ملاحظات إضافية',
-        }
-
-class PropertyForm(forms.ModelForm):
-    class Meta:
-        model = Property
-        exclude = ['owner', 'is_approved', 'status']  # أو استخدم fields حسب الحاجة
-        labels = {
-            'name': 'اسم العقار',
-            'city': 'المدينة',
-            'district': 'الحي',
-            'type': 'نوع العقار',
-            'space': 'المساحة (م²)',
-            'price': 'السعر',
-            'contact_method': 'طريقة التواصل',
-            'license_number': 'رقم الترخيص',
-            'latitude': 'خط العرض',
-            'longitude': 'خط الطول',
-        }
-
-from .models import RentalInfo
-
-class RentalInfoForm(forms.ModelForm):
-    class Meta:
-        model = RentalInfo
-        fields = ['unit', 'start_date', 'end_date', 'amount', 'tenant_name']
-        labels = {
-            'unit': 'الوحدة',
-            'start_date': 'تاريخ البداية',
-            'end_date': 'تاريخ النهاية',
-            'amount': 'قيمة الإيجار',
-            'tenant_name': 'اسم المستأجر',
         }

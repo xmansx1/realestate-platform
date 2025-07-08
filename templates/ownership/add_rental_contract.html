@@ -1,0 +1,27 @@
+{% extends "accounts/base_admin.html" %}
+{% load widget_tweaks %}
+
+{% block title %}إضافة عقد إيجار{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto bg-white shadow p-6 rounded-xl">
+  <h2 class="text-xl font-semibold text-green-700 mb-4">📄 إضافة عقد إيجار للوحدة: {{ unit.name }}</h2>
+
+  <form method="POST" class="space-y-4">
+    {% csrf_token %}
+    {% for field in form %}
+      <div>
+        <label class="block text-sm text-gray-700 font-medium mb-1">{{ field.label }}</label>
+        {{ field|add_class:"w-full p-2 border rounded-md" }}
+        {% if field.help_text %}
+          <small class="text-gray-500">{{ field.help_text }}</small>
+        {% endif %}
+        {% for error in field.errors %}
+          <p class="text-red-600 text-sm">{{ error }}</p>
+        {% endfor %}
+      </div>
+    {% endfor %}
+    <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md">حفظ العقد</button>
+  </form>
+</div>
+{% endblock %}

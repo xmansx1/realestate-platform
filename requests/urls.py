@@ -46,6 +46,8 @@ urlpatterns = [
     path('agent/my-deals/', my_deals_view, name='agent_deals'),
     path('agent/execute/<int:request_id>/', execute_deal, name='execute_deal'),
     path('agent/cancel-reservation/<int:request_id>/', cancel_reservation, name='cancel_reservation'),
+    path('agent/dashboard/', views.agent_dashboard_view, name='agent_dashboard'),
+
 
     # ✅ روابط عامة (للطلبات)
     path('<int:request_id>/reserve/', reserve_request, name='reserve_request'),
@@ -55,7 +57,7 @@ urlpatterns = [
     # ✅ تسجيل الخروج
     path('logout/', auth_views.LogoutView.as_view(next_page='home'), name='logout'),
     path('agent/available/', views.available_requests_view, name='agent_available'),
-
+    
     # ✅ الصفحة الافتراضية
     path('', broker_request_list, name='list'),
 ]

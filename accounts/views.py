@@ -225,3 +225,9 @@ def manage_users(request):
     return render(request, 'accounts/manage_users.html', {
         'users': users,
     })
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+
+@login_required
+def owner_dashboard(request):
+    return render(request, 'accounts/owner_dashboard.html')

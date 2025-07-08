@@ -9,8 +9,10 @@ from core.views import home_view
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home_view, name='home'),
+    path('accounts/', include('accounts.urls')),
     path('logout/', auth_views.LogoutView.as_view(next_page='home'), name='logout'),
-
+    path('requests/', include('requests.urls')),
+    path('owner/', include('ownership.urls')),
     # ✅ مرة واحدة فقط لكل namespace
     path('accounts/', include(('accounts.urls', 'accounts'), namespace='accounts')),
     path('properties/', include(('properties.urls', 'properties'), namespace='properties')),

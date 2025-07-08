@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
-
+from django.conf import settings
 class Property(models.Model):
     STATUS_CHOICES = [
         ('active', 'نشط'),
@@ -13,6 +13,13 @@ class Property(models.Model):
         ('sale', 'بيع'),
         ('rent', 'إيجار'),
     ]
+
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='properties',
+        verbose_name="المالك"
+    )
 
     title = models.CharField(max_length=255, verbose_name="عنوان العقار")
     description = models.TextField(verbose_name="وصف العقار")
@@ -58,7 +65,6 @@ class Property(models.Model):
 
     def __str__(self):
         return self.title
-
 @property
 def publisher_name(self):
     if self.created_by:

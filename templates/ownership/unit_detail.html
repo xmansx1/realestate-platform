@@ -1,0 +1,103 @@
+{% extends "accounts/base_admin.html" %}
+{% block title %}تفاصيل الوحدة{% endblock %}
+
+{% block content %}
+<div class="bg-white shadow-xl rounded-xl p-6 max-w-4xl mx-auto space-y-6">
+
+  <!-- العنوان والأزرار -->
+  <div class="flex justify-between items-center border-b pb-4">
+    <h1 class="text-2xl font-bold text-green-700 flex items-center gap-2">🧱 {{ unit.name }}</h1>
+    <div class="space-x-2 rtl:space-x-reverse">
+      <a href="{% url 'ownership:edit_unit' unit.pk %}" class="text-sm text-blue-600 hover:underline">
+        ✏️ تعديل الوحدة
+      </a>
+      <a href="{% url 'ownership:delete_unit' unit.pk %}" class="text-sm text-red-600 hover:underline">
+        🗑️ حذف الوحدة
+      </a>
+    </div>
+  </div>
+
+  <!-- التفاصيل الأساسية -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-800">
+    <p><strong>العقار:</strong> {{ unit.property.title }}</p>
+    <p><strong>المساحة:</strong> {{ unit.area }} م²</p>
+    <p><strong>عدد الغرف:</strong> {{ unit.rooms }}</p>
+    <p><strong>الإيجار الشهري:</strong> {{ unit.rent_amount }} ريال</p>
+    <p><strong>الحالة:</strong> {{ unit.get_status_display }}</p>
+  </div>
+
+  <!-- الوصف -->
+  {% if unit.description %}
+  <div>
+    <h2 class="text-green-700 font-semibold mb-1">📄 الوصف:</h2>
+    <p class="text-gray-600 leading-relaxed">{{ unit.description }}</p>
+  </div>
+  {% endif %}
+
+  <!-- عقد الإيجار -->
+  <div class="border-t pt-4">
+    <div class="flex justify-between items-center mb-2">
+      <h2 class="text-green-700 font-bold">📄 عقد الإيجار</h2>
+      {% if not rental_info %}
+      <a href="{% url 'ownership:add_rental_contract' unit.pk %}" class="text-sm text-green-700 hover:underline">
+        ➕ إضافة عقد إيجار
+      </a>
+      {% endif %}
+    </div>
+
+    {% if rental_info %}
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-gray-700">
+        <p><strong>المستأجر:</strong> {{ rental_info.tenant_name }}</p>
+        <p><strong>الفترة:</strong> {{ rental_info.start_date }} إلى {{ rental_info.end_date }}</p>
+        <p><strong>المبلغ:</strong> {{ rental_info.amount }} ريال</p>
+        {% if rental_info.notes %}
+          <p class="col-span-2"><strong>ملاحظات:</strong> {{ rental_info.notes }}</p>
+        {% endif %}
+      </div>
+    {% else %}
+      <p class="text-gray-500 text-sm">لا يوجد عقد إيجار لهذه الوحدة.</p>
+    {% endif %}
+  </div>
+
+  <!-- سجل التحديثات -->
+  <div class="border-t pt-4">
+    <div class="flex justify-between items-center mb-2">
+      <h2 class="text-green-700 font-bold">🛠️ سجل التحديثات</h2>
+      <a href="{% url 'ownership:add_unit_update' unit.pk %}" class="text-sm text-green-700 hover:underline">
+        ➕ إضافة تحديث
+      </a>
+    </div>
+
+    {% if updates.exists %}
+      <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+        {% for update in updates %}
+          <li>{{ update.date }} - {{ update.description }}</li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="text-gray-500 text-sm">لا توجد تحديثات مسجلة لهذه الوحدة.</p>
+    {% endif %}
+  </div>
+
+  <!-- المصروفات -->
+  <div class="border-t pt-4">
+    <div class="flex justify-between items-center mb-2">
+      <h2 class="text-green-700 font-bold">💰 المصروفات</h2>
+      <a href="{% url 'ownership:add_unit_expense' unit.pk %}" class="text-sm text-green-700 hover:underline">
+        ➕ إضافة مصروف
+      </a>
+    </div>
+
+    {% if expenses.exists %}
+      <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+        {% for expense in expenses %}
+          <li>{{ expense.date }} - {{ expense.description }} ({{ expense.amount }} ريال)</li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="text-gray-500 text-sm">لا توجد مصروفات مسجلة لهذه الوحدة.</p>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}
