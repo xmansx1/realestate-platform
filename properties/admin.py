@@ -4,8 +4,12 @@ from .models import Property
 
 @admin.register(Property)
 class PropertyAdmin(admin.ModelAdmin):
-    list_display = ('title', 'price', 'status', 'created_at', 'created_by', 'image_preview')
-    list_filter = ('status', 'created_at')
+    list_display = (
+        "title", "price", "status", "property_type",
+        "is_approved", "created_at", "created_by"
+    )
+    list_filter = ("status", "property_type", "is_approved")
+    list_editable = ("is_approved",)
     search_fields = ('title', 'location', 'description')
     ordering = ('-created_at',)
 

@@ -19,4 +19,5 @@ urlpatterns = [
     # ✅ إدارة اعتماد العقارات
     path('admin/properties/approve/<int:pk>/', views.admin_approve_property, name='admin_approve_property'),
     path('admin/properties/unapprove/<int:pk>/', views.admin_unapprove_property, name='admin_unapprove_property'),
+    path('property/<int:pk>/', views.property_detail, name='detail'),
 ]

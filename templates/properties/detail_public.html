@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}تفاصيل العقار - {{ property.title }}{% endblock %}
+
+{% block content %}
+<section class="py-12 bg-gray-100">
+  <div class="max-w-5xl mx-auto bg-white shadow-lg rounded-xl p-8 space-y-8">
+
+    <!-- العنوان -->
+    <div class="flex justify-between items-center border-b pb-4">
+      <h1 class="text-2xl font-bold text-green-700">{{ property.title }}</h1>
+
+      {% with phone=property.contact_info %}
+        {% with phone|cut:" "|cut:"-"|cut:"+" as clean_phone %}
+          {% if clean_phone|slice:":1" == "0" %}
+            {% with "966"|add:clean_phone|slice:"1:" as phone_intl %}
+              <div class="flex gap-2">
+                <a href="https://wa.me/{{ phone_intl }}" target="_blank"
+                   class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-semibold shadow">
+                  تواصل عبر واتساب
+                </a>
+                <a href="tel:{{ phone_intl }}" 
+                   class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-semibold shadow">
+                  اتصل الآن
+                </a>
+              </div>
+            {% endwith %}
+          {% else %}
+            <div class="flex gap-2">
+              <a href="https://wa.me/{{ clean_phone }}" target="_blank"
+                 class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-semibold shadow">
+                تواصل عبر واتساب
+              </a>
+              <a href="tel:{{ clean_phone }}" 
+                 class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-semibold shadow">
+                اتصل الآن
+              </a>
+            </div>
+          {% endif %}
+        {% endwith %}
+      {% endwith %}
+    </div>
+
+    <!-- التفاصيل -->
+    <div class="grid md:grid-cols-2 gap-8">
+
+      <!-- الصورة -->
+      <div>
+        {% if property.image %}
+          <img src="{{ property.image.url }}" alt="صورة العقار" class="rounded-xl w-full h-80 object-cover shadow">
+        {% else %}
+          <div class="w-full h-80 bg-gray-200 flex items-center justify-center rounded-xl text-gray-500">
+            لا توجد صورة للعقار
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- البيانات -->
+      <div class="space-y-4 text-gray-700 text-sm leading-relaxed">
+        <p><span class="font-semibold text-gray-800">النوع:</span> {{ property.get_property_type_display }}</p>
+        <p><span class="font-semibold text-gray-800">السعر:</span> {{ property.price }} ريال</p>
+        <p><span class="font-semibold text-gray-800">المساحة:</span> {{ property.area|default:"-" }} م²</p>
+        <p><span class="font-semibold text-gray-800">الموقع:</span> {{ property.city }} - {{ property.district }}</p>
+        <p><span class="font-semibold text-gray-800">رقم الترخيص:</span> {{ property.license_number|default:"-" }}</p>
+        <p><span class="font-semibold text-gray-800">الوسيط:</span> {{ property.publisher_name }}</p>
+      </div>
+
+    </div>
+
+    <!-- الوصف -->
+    <div>
+      <h2 class="text-lg font-semibold text-gray-800 mb-2">الوصف:</h2>
+      <div class="bg-gray-50 p-4 rounded-lg text-gray-700 leading-relaxed border">
+        {{ property.description|linebreaksbr|default:"لا يوجد وصف." }}
+      </div>
+    </div>
+
+    <!-- الخريطة -->
+    {% if property.latitude and property.longitude %}
+      <div>
+        <h2 class="text-lg font-semibold text-gray-800 mb-2">الموقع على الخريطة:</h2>
+        <div id="map" class="w-full h-96 rounded-lg shadow border"></div>
+      </div>
+
+      <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+      <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+      <script>
+        const map = L.map('map').setView([{{ property.latitude }}, {{ property.longitude }}], 15);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+        L.marker([{{ property.latitude }}, {{ property.longitude }}]).addTo(map)
+          .bindPopup("{{ property.title }}").openPopup();
+      </script>
+    {% endif %}
+
+  </div>
+</section>
+{% endblock %}

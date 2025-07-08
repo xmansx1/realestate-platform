@@ -10,13 +10,16 @@ from .forms import PropertyForm
 def property_detail(request, pk):
     try:
         if request.user.is_staff:
-            property = Property.objects.get(pk=pk)
+            prop = Property.objects.get(pk=pk)
+            template = 'properties/detail.html'
+
         else:
-            property = Property.objects.get(pk=pk, status='active')
+            prop = Property.objects.get(pk=pk, status='active', is_approved=True)
+            template = 'properties/detail_public.html'
     except Property.DoesNotExist:
         raise Http404("العقار غير موجود أو غير مفعل.")
     
-    return render(request, 'properties/detail.html', {'property': property})
+    return render(request, template, {'property': prop})
 
 
 # 🌐 عرض قائمة العقارات النشطة للزوار

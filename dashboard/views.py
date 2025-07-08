@@ -31,15 +31,17 @@ def dashboard_view(request):
 def admin_dashboard_view(request):
     start_date = request.GET.get('start')
     end_date = request.GET.get('end')
-    filters = {}
 
+    filters = {}
     if start_date:
         filters['created_at__gte'] = start_date
     if end_date:
         filters['created_at__lte'] = end_date
 
+    # الصفقات في المدى الزمني المحدد
     deals = Deal.objects.filter(**filters)
 
+    # إحصائيات الطلبات والصفقات
     stats = {
         'total_requests': RealEstateRequest.objects.count(),
         'requests_by_status': RealEstateRequest.objects.values('status').annotate(total=Count('id')),
@@ -48,12 +50,11 @@ def admin_dashboard_view(request):
         'platform_share': deals.aggregate(total=Sum('platform_share'))['total'] or 0,
     }
 
-    return render(request, 'admin_dashboard.html', {
+    return render(request, 'accounts/admin_dashboard.html', {
         'stats': stats,
         'start_date': start_date,
         'end_date': end_date,
-    })
-    
+    })    
 # dashboard/views.py
 
 import datetime

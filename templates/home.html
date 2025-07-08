@@ -11,8 +11,7 @@
   <div class="relative z-10 text-center">
     <h1 class="text-4xl sm:text-5xl font-bold mb-4">منصتك المثالية لتسويق العقارات</h1>
     <p class="text-lg mb-6">اكتشف العقارات المميزة وتواصل مباشرة مع المالك أو الوسيط المعتمد</p>
-    <a href="{% url 'properties:list' %}" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg text-lg shadow">استعرض العقارات</a>
-
+ 
   </div>
 </section>
 
@@ -46,26 +45,52 @@
 </section>
 
 <!-- عقارات مميزة -->
-<section class="py-16">
+<section class="py-16 bg-gray-50">
   <div class="max-w-6xl mx-auto px-4">
-    <h2 class="text-3xl font-bold text-gray-800 mb-10 text-center">🏡 عقارات مميزة</h2>
-    <div class="grid md:grid-cols-3 gap-6">
-      {% for prop in featured_properties %}
-      <div class="bg-white shadow rounded-lg overflow-hidden">
-        {% if prop.image %}
-          <img src="{{ prop.image.url }}" class="w-full h-48 object-cover">
-        {% endif %}
-        <div class="p-4">
-          <h3 class="text-lg font-semibold text-green-700">{{ prop.title }}</h3>
-          <p class="text-gray-600 text-sm mb-2">{{ prop.location }}</p>
-          <p class="text-gray-900 font-bold">{{ prop.price }} ريال</p>
-          <a href="{% url 'properties:detail' prop.id %}" class="text-sm text-blue-600 hover:underline mt-2 inline-block">عرض التفاصيل</a>
+    <h2 class="text-3xl font-bold text-gray-800 mb-10 text-center">🏡 العقارات المتوفرة</h2>
+
+    <!-- قسم البيع -->
+    <h3 class="text-2xl font-bold text-green-700 mb-6">عقارات للبيع</h3>
+    <div class="grid md:grid-cols-3 gap-6 mb-12">
+      {% for prop in sale_properties %}
+        <div class="bg-white shadow rounded-xl overflow-hidden hover:shadow-lg transition">
+          {% if prop.image %}
+            <img src="{{ prop.image.url }}" class="w-full h-48 object-cover" alt="{{ prop.title }}">
+          {% endif %}
+          <div class="p-4">
+            <h4 class="text-lg font-semibold text-green-700">{{ prop.title }}</h4>
+            <p class="text-sm text-gray-500">{{ prop.city }}</p>
+            <p class="text-gray-900 font-bold mt-2">{{ prop.price }} ريال</p>
+            <a href="{% url 'properties:detail' prop.id %}" class="text-sm text-blue-600 hover:underline mt-2 inline-block">عرض التفاصيل</a>
+          </div>
         </div>
-      </div>
+      {% empty %}
+        <p class="text-gray-500 col-span-3">لا توجد عقارات للبيع حاليًا.</p>
+      {% endfor %}
+    </div>
+
+    <!-- قسم الإيجار -->
+    <h3 class="text-2xl font-bold text-green-700 mb-6">عقارات للإيجار</h3>
+    <div class="grid md:grid-cols-3 gap-6">
+      {% for prop in rent_properties %}
+        <div class="bg-white shadow rounded-xl overflow-hidden hover:shadow-lg transition">
+          {% if prop.image %}
+            <img src="{{ prop.image.url }}" class="w-full h-48 object-cover" alt="{{ prop.title }}">
+          {% endif %}
+          <div class="p-4">
+            <h4 class="text-lg font-semibold text-green-700">{{ prop.title }}</h4>
+            <p class="text-sm text-gray-500">{{ prop.city }}</p>
+            <p class="text-gray-900 font-bold mt-2">{{ prop.price }} ريال</p>
+            <a href="{% url 'properties:detail' prop.id %}" class="text-sm text-blue-600 hover:underline mt-2 inline-block">عرض التفاصيل</a>
+          </div>
+        </div>
+      {% empty %}
+        <p class="text-gray-500 col-span-3">لا توجد عقارات للإيجار حاليًا.</p>
       {% endfor %}
     </div>
   </div>
 </section>
+
 
 <!-- خطوات الطلب -->
 <section class="bg-green-50 py-16">

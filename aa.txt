@@ -1,5 +1,5 @@
 git add .
-git commit -m "رسالة توضح التغيير"
+git commit -m "2"
 git push
 
 لجلب تحديثات من المستودع:

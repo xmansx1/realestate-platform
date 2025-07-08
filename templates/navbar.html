@@ -1,18 +1,38 @@
-**`navbar.html`**
-```html
 <nav class="bg-white shadow-md fixed top-0 inset-x-0 z-50">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex justify-between h-16 items-center">
+      
+      <!-- شعار -->
       <a href="/" class="text-green-700 font-bold text-xl">📍 المنصة العقارية</a>
 
-      <div class="space-x-4 rtl:space-x-reverse">
-        <a href="/" class="text-gray-700 hover:text-green-600">الرئيسية</a>
-        <a href="{% url 'properties:list' %}" class="text-gray-700 hover:text-green-600">العقارات</a>
-        <a href="{% url 'requests:general_request' %}" class="text-gray-700 hover:text-green-600">
-  <i class="fas fa-file-alt"></i> طلب عقار
-</a>
+      <!-- الروابط -->
+      <div class="space-x-4 rtl:space-x-reverse flex items-center">
 
-        <a href="{% url 'accounts:login' %}" class="text-gray-700 hover:text-green-600">تسجيل الدخول</a>
+        <a href="/" class="text-gray-700 hover:text-green-600">الرئيسية</a>
+         <a href="{% url 'requests:general_request' %}" class="text-gray-700 hover:text-green-600">
+          <i class="fas fa-file-alt"></i> طلب عقار
+        </a>
+
+        {% if user.is_authenticated %}
+          {% if user.is_superuser %}
+           {% elif user.is_staff %}
+            <a href="{% url 'admin_dashboard' %}" class="text-gray-700 hover:text-green-600">لوحة المشرف</a>
+          {% elif user.role == 'agent' %}
+            <a href="{% url 'agent_dashboard' %}" class="text-gray-700 hover:text-green-600">لوحة الوسيط</a>
+          {% elif user.role == 'owner' %}
+            <a href="{% url 'owner_dashboard' %}" class="text-gray-700 hover:text-green-600">لوحة المالك</a>
+          {% endif %}
+
+          <span class="text-sm text-gray-600 hidden sm:inline-block">
+            مرحبًا، {{ user.get_full_name|default:user.email }}
+          </span>
+
+          <a href="{% url 'accounts:logout' %}" class="text-red-600 hover:text-red-800 text-sm">تسجيل الخروج</a>
+        
+        {% else %}
+          <a href="{% url 'accounts:login' %}" class="text-gray-700 hover:text-green-600">تسجيل الدخول</a>
+        {% endif %}
+
       </div>
     </div>
   </div>
