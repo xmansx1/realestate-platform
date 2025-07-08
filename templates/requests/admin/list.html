@@ -34,6 +34,7 @@
           <th class="py-3 px-5">نوع الطلب</th>
           <th class="py-3 px-5">المدينة</th>
           <th class="py-3 px-5">الحالة</th>
+          <th class="py-3 px-5">الموافقة</th>
           <th class="py-3 px-5">خيارات</th>
         </tr>
       </thead>
@@ -45,12 +46,27 @@
           <td class="py-3 px-5 text-gray-600">{{ request.get_purpose_display }}</td>
           <td class="py-3 px-5 text-gray-600">{{ request.city }}</td>
           <td class="py-3 px-5">
-            {% if request.status == 'new' %}
-              <span class="inline-block px-3 py-1 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded-full">جديد</span>
-            {% elif request.status == 'reviewed' %}
-              <span class="inline-block px-3 py-1 bg-blue-100 text-blue-800 text-xs font-semibold rounded-full">مُراجع</span>
-            {% elif request.status == 'contacted' %}
-              <span class="inline-block px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">تم التواصل</span>
+{% if request.status == 'executed' %}
+  <span class="inline-block px-3 py-1 bg-green-600 text-white text-xs font-semibold rounded-full">تم التنفيذ ✅</span>
+{% elif request.status == 'contacted' %}
+  <span class="inline-block px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">تم التواصل</span>
+{% elif request.status == 'reviewed' %}
+  <span class="inline-block px-3 py-1 bg-blue-100 text-blue-800 text-xs font-semibold rounded-full">مُراجع</span>
+{% elif request.status == 'new' %}
+  <span class="inline-block px-3 py-1 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded-full">جديد</span>
+{% else %}
+  <span class="inline-block px-3 py-1 bg-gray-100 text-gray-600 text-xs font-semibold rounded-full">غير محددة</span>
+{% endif %}
+
+          </td>
+          <td class="py-3 px-5">
+            {% if request.is_approved %}
+              <span class="text-green-700 font-bold text-xs">✅ معتمد</span>
+            {% else %}
+              <form method="post" action="{% url 'requests:admin_approve' request.id %}" onsubmit="return confirm('هل أنت متأكد من اعتماد هذا الطلب؟');">
+                {% csrf_token %}
+                <button type="submit" class="text-blue-600 hover:underline text-xs font-semibold">✔️ اعتماد</button>
+              </form>
             {% endif %}
           </td>
           <td class="py-3 px-5">
@@ -61,7 +77,7 @@
         </tr>
         {% empty %}
         <tr>
-          <td colspan="6" class="py-6 text-gray-500 text-center">لا توجد طلبات حالياً.</td>
+          <td colspan="7" class="py-6 text-gray-500 text-center">لا توجد طلبات حالياً.</td>
         </tr>
         {% endfor %}
       </tbody>

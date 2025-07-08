@@ -1,0 +1,11 @@
+git add .
+git commit -m "رسالة توضح التغيير"
+git push
+
+لجلب تحديثات من المستودع:
+git pull
+
+
+python manage.py runserver
+
+venv\Scripts\activate   

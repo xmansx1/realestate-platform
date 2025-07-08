@@ -1,0 +1,29 @@
+{% extends "requests/agent/base_agent.html" %} {% block title %}تأكيد إلغاء
+الحجز{% endblock %} {% block content %}
+<div class="max-w-lg mx-auto bg-white p-6 rounded shadow">
+  <h2 class="text-xl font-bold mb-4">تأكيد إلغاء الحجز</h2>
+  <p>
+    هل أنت متأكد من رغبتك في إلغاء حجز الطلب من:
+    <strong>{{ request_obj.full_name }}</strong>؟
+  </p>
+  <p>نوع الطلب: {{ request_obj.get_purpose_display }}</p>
+  <p>العقار: {{ request_obj.get_property_type_display }}</p>
+  <p>المدينة: {{ request_obj.city }}, الحي: {{ request_obj.district }}</p>
+
+  <form method="post" class="mt-6">
+    {% csrf_token %}
+    <button
+      type="submit"
+      class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded"
+    >
+      تأكيد الإلغاء
+    </button>
+    <a
+      href="{% url 'requests:agent_reserved' %}
+"
+      class="ml-4 text-gray-600 hover:underline"
+      >إلغاء</a
+    >
+  </form>
+</div>
+{% endblock %}

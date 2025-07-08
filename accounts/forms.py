@@ -41,18 +41,11 @@ class AdminLoginForm(forms.Form):
     phone = forms.CharField(
         label="رقم الجوال",
         max_length=15,
-        widget=forms.TextInput(attrs={
-            'class': 'form-input',
-            'placeholder': 'أدخل رقم الجوال'
-        })
+        widget=forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'أدخل رقم الجوال'})
     )
-
     password = forms.CharField(
         label="كلمة المرور",
-        widget=forms.PasswordInput(attrs={
-            'class': 'form-input',
-            'placeholder': 'أدخل كلمة المرور'
-        })
+        widget=forms.PasswordInput(attrs={'class': 'form-input', 'placeholder': 'أدخل كلمة المرور'})
     )
 
 # ✅ نموذج تحديث بيانات المستخدم
@@ -94,3 +87,5 @@ class CustomUserCreateForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
+
+

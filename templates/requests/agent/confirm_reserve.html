@@ -1,0 +1,26 @@
+{% extends "requests/agent/base_agent.html" %}
+{% block title %}تأكيد الحجز{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto bg-white p-6 shadow rounded-xl">
+  <h2 class="text-xl font-bold text-green-700 mb-4">هل أنت متأكد من حجز هذا الطلب؟</h2>
+
+  <div class="text-gray-700 mb-6 space-y-2">
+    <p><strong>رقم الطلب:</strong> {{ request_obj.id }}</p>
+    <p><strong>الاسم:</strong> {{ request_obj.full_name }}</p>
+    <p><strong>نوع الطلب:</strong> {{ request_obj.get_purpose_display }}</p>
+    <p><strong>الميزانية:</strong> {{ request_obj.budget|floatformat:0 }}</p>
+    <p><strong>المدينة:</strong> {{ request_obj.city }}</p>
+  </div>
+
+  <form method="POST">
+    {% csrf_token %}
+    <div class="flex justify-between items-center">
+      <a href="{% url 'requests:agent_available' %}" class="text-sm text-gray-500 hover:underline">رجوع</a>
+      <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+        تأكيد الحجز
+      </button>
+    </div>
+  </form>
+</div>
+{% endblock %}

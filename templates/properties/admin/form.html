@@ -9,22 +9,23 @@
   <form method="POST" enctype="multipart/form-data" class="space-y-4">
     {% csrf_token %}
 
-    {% for field in form %}
-      {% if field.name != "latitude" and field.name != "longitude" %}
-        <div>
-          <label class="block text-sm text-gray-700 font-medium mb-1">{{ field.label }}</label>
-          {{ field|add_class:"w-full p-2 border rounded-md" }}
-          {% if field.help_text %}
-            <small class="text-gray-500">{{ field.help_text }}</small>
-          {% endif %}
-          {% for error in field.errors %}
-            <p class="text-red-500 text-sm mt-1">{{ error }}</p>
-          {% endfor %}
-        </div>
-      {% else %}
-        {{ field.as_hidden }}
+{% for field in form %}
+  {% if field.name != "latitude" and field.name != "longitude" and field.name != "is_approved" %}
+    <div>
+      <label class="block text-sm text-gray-700 font-medium mb-1">{{ field.label }}</label>
+      {{ field|add_class:"w-full p-2 border rounded-md" }}
+      {% if field.help_text %}
+        <small class="text-gray-500">{{ field.help_text }}</small>
       {% endif %}
-    {% endfor %}
+      {% for error in field.errors %}
+        <p class="text-red-500 text-sm mt-1">{{ error }}</p>
+      {% endfor %}
+    </div>
+  {% else %}
+    {{ field.as_hidden }}
+  {% endif %}
+{% endfor %}
+
 
     <!-- خريطة الموقع -->
     <div>

@@ -5,24 +5,25 @@ from requests.models import RealEstateRequest
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render
 from django.db.models import Count, Sum
-from requests.models import Deal, RealEstateRequest
+from requests.models import RealEstateRequest
+from deals.models import Deal
+
 
 
 @staff_member_required
 def dashboard_view(request):
     total_requests = RealEstateRequest.objects.count()
-    new_requests = RealEstateRequest.objects.filter(status='new').count()
-
-    total_properties = Property.objects.count()
-    active_properties = Property.objects.filter(status='active').count()
-    archived_properties = Property.objects.filter(status='archived').count()
+    total_executed = Deal.objects.count()
+    total_commission = Deal.objects.aggregate(Sum('commission'))['commission__sum'] or 0
+    platform_share = Deal.objects.aggregate(Sum('platform_share'))['platform_share__sum'] or 0
 
     context = {
-        'total_requests': total_requests,
-        'new_requests': new_requests,
-        'total_properties': total_properties,
-        'active_properties': active_properties,
-        'archived_properties': archived_properties,
+        'stats': {
+            'total_requests': total_requests,
+            'total_executed': total_executed,
+            'total_commission': total_commission,
+            'platform_share': platform_share,
+        }
     }
     return render(request, 'dashboard/dashboard.html', context)
 
@@ -58,7 +59,7 @@ def admin_dashboard_view(request):
 import datetime
 import openpyxl
 from django.http import HttpResponse
-from requests.models import Deal
+from deals.models import Deal
 
 def export_deals_excel(request):
     wb = openpyxl.Workbook()

@@ -160,7 +160,7 @@ from .models import Unit
 @login_required
 def unit_detail(request, unit_id):
     unit = get_object_or_404(
-        Unit.objects.select_related('property', 'rental_info').prefetch_related('updates'),
+        Unit.objects.select_related('property', 'rental_info').prefetch_related('updates', 'scheduled_maintenances'),
         id=unit_id,
         property__owner=request.user
     )
@@ -169,6 +169,7 @@ def unit_detail(request, unit_id):
         'unit': unit,
         'rental_info': getattr(unit, 'rental_info', None),
         'updates': unit.updates.order_by('-date'),
+        'scheduled_maintenances': unit.scheduled_maintenances.order_by('-scheduled_date'),
     }
     return render(request, 'management/unit_detail.html', context)
 
@@ -178,16 +179,16 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Unit, RentalInfo
 from .forms import RentalInfoForm
+from django.contrib.admin.views.decorators import staff_member_required
 
-
-@login_required
+@staff_member_required
 def add_rental_info(request, unit_id):
-    unit = get_object_or_404(Unit, id=unit_id, property__owner=request.user)
+    unit = get_object_or_404(Unit, id=unit_id)
 
-    # تأكد من عدم وجود عقد إيجار سابق
+    # تأكد أنه لا يوجد عقد إيجار مكرر
     if hasattr(unit, 'rental_info'):
-        messages.warning(request, "⚠️ يوجد عقد إيجار مسجل لهذه الوحدة مسبقًا.")
-        return redirect('management:unit_detail', unit_id=unit.id)
+        messages.error(request, "هذه الوحدة لديها عقد إيجار مسجل بالفعل.")
+        return redirect('management:unit_detail', pk=unit.id)
 
     if request.method == 'POST':
         form = RentalInfoForm(request.POST)
@@ -195,16 +196,15 @@ def add_rental_info(request, unit_id):
             rental = form.save(commit=False)
             rental.unit = unit
             rental.save()
-            messages.success(request, "✅ تم إضافة عقد الإيجار بنجاح.")
-            return redirect('management:unit_detail', unit_id=unit.id)
+            messages.success(request, "تم حفظ عقد الإيجار بنجاح.")
+            return redirect('management:unit_detail', pk=unit.id)
     else:
-        form = RentalInfoForm()
+        form = RentalInfoForm(initial={'unit': unit})
 
     return render(request, 'management/add_rental_info.html', {
         'form': form,
         'unit': unit
     })
-
 
 @login_required
 def unit_updates_view(request, unit_id):
@@ -236,19 +236,19 @@ def add_unit_update(request, unit_id):
         'unit': unit,
     })
     
-@login_required
+@staff_member_required
 def edit_rental_info(request, unit_id):
-    unit = get_object_or_404(Unit, id=unit_id, property__owner=request.user)
-    rental_info = get_object_or_404(RentalInfo, unit=unit)
+    unit = get_object_or_404(Unit, id=unit_id)
+    rental = get_object_or_404(RentalInfo, unit=unit)
 
     if request.method == 'POST':
-        form = RentalInfoForm(request.POST, instance=rental_info)
+        form = RentalInfoForm(request.POST, instance=rental)
         if form.is_valid():
             form.save()
-            messages.success(request, "✅ تم تعديل عقد الإيجار بنجاح.")
-            return redirect('management:unit_detail', unit_id=unit.id)
+            messages.success(request, "تم تحديث عقد الإيجار بنجاح.")
+            return redirect('management:unit_detail', pk=unit.id)
     else:
-        form = RentalInfoForm(instance=rental_info)
+        form = RentalInfoForm(instance=rental)
 
     return render(request, 'management/edit_rental_info.html', {
         'form': form,
@@ -421,3 +421,106 @@ def delete_scheduled_maintenance(request, pk):
     return render(request, 'management/confirm_delete_maintenance.html', {
         'maintenance': maintenance
     })
+
+
+
+@staff_member_required
+def admin_properties_view(request):
+    properties = Property.objects.all()
+    context = {
+        'properties': properties
+    }
+    return render(request, 'properties/admin/admin_properties.html', context)
+
+
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
+@staff_member_required
+def assign_staff(request, unit_id, user_id):
+    unit = get_object_or_404(Unit, id=unit_id)
+    user = get_object_or_404(User, id=user_id, is_staff=True)
+    unit.assigned_to = user
+    unit.save()
+    return redirect('management:unit_detail', pk=unit.id)
+from accounts.models import CustomUser 
+
+@staff_member_required
+def assign_staff_view(request):
+    units = Unit.objects.filter(assigned_to__isnull=True)
+    staff_users = CustomUser.objects.filter(is_staff=True)
+
+    if request.method == "POST":
+        unit_id = request.POST.get("unit_id")
+        staff_id = request.POST.get("staff_id")
+        unit = get_object_or_404(Unit, id=unit_id)
+        staff = get_object_or_404(CustomUser, id=staff_id, is_staff=True)
+        unit.assigned_to = staff
+        unit.save()
+        messages.success(request, f"تم تعيين الموظف {staff.get_full_name()} للوحدة {unit.unit_number}.")
+        return redirect('management:assign_staff_view')
+
+    context = {
+        'units': units,
+        'staff_users': staff_users,
+    }
+    return render(request, 'management/assign_staff.html', context)
+
+import json
+from django.http import JsonResponse
+
+@require_POST
+def assign_staff_to_unit(request):
+    try:
+        data = json.loads(request.body)
+        unit_id = data.get("unit_id")
+        user_id = data.get("user_id")
+
+        if not unit_id or not user_id:
+            return JsonResponse({"success": False, "message": "بيانات غير مكتملة"}, status=400)
+
+        unit = Unit.objects.get(id=unit_id)
+        user = get_user_model().objects.get(id=user_id, is_staff=True)
+
+        unit.assigned_to = user
+        unit.save()
+
+        return JsonResponse({"success": True})
+    except Unit.DoesNotExist:
+        return JsonResponse({"success": False, "message": "الوحدة غير موجودة"}, status=404)
+    except get_user_model().DoesNotExist:
+        return JsonResponse({"success": False, "message": "الموظف غير موجود"}, status=404)
+    except Exception as e:
+        return JsonResponse({"success": False, "message": str(e)}, status=500)  
+    
+
+from django.views.decorators.http import require_POST
+from django.http import JsonResponse
+import json
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+from .models import Unit
+from django.contrib.auth import get_user_model
+User = get_user_model()
+
+@require_POST
+@csrf_exempt  # استخدم فقط إذا لم يعمل csrf_token في الجافاسكربت
+@login_required
+def assign_staff(request):
+    data = json.loads(request.body)
+    unit_id = data.get('unit_id')
+    user_id = data.get('user_id')
+
+    try:
+        unit = Unit.objects.get(id=unit_id)
+        staff = User.objects.get(id=user_id)
+        unit.staff = staff
+        unit.save()
+        return JsonResponse({'success': True})
+    except Unit.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'الوحدة غير موجودة'})
+    except User.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'الموظف غير موجود'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})

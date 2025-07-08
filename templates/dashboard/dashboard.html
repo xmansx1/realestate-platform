@@ -1,42 +1,56 @@
 {% extends "accounts/base_admin.html" %}
-{% block title %}لوحة التحكم{% endblock %}
+
+{% block title %}لوحة تحكم المشرف{% endblock %}
 
 {% block content %}
-<h2 class="text-2xl font-bold text-green-700 mb-6 flex items-center gap-2">
-  <i class="fas fa-chart-line"></i> لوحة التحكم
-</h2>
+<div class="bg-gray-50 min-h-screen py-8 px-4">
+  <div class="max-w-7xl mx-auto space-y-10">
 
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-  
-  <!-- عدد الطلبات الكلي -->
-  <div class="bg-white shadow rounded-lg p-5">
-    <h3 class="text-sm text-gray-500">عدد الطلبات العقارية</h3>
-    <p class="text-3xl font-bold text-green-700">{{ total_requests }}</p>
+    <!-- العنوان -->
+    <div class="flex justify-between items-center bg-white shadow-md rounded-xl px-6 py-5 border">
+      <div>
+        <h1 class="text-3xl font-extrabold text-green-700">👨‍💼 لوحة تحكم المشرف</h1>
+        <p class="text-sm text-gray-500 mt-1">
+          مرحبًا، <span class="font-semibold text-green-800">{{ request.user.full_name }}</span> 👋
+        </p>
+      </div>
+    </div>
+
+    <!-- الإحصائيات العامة -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <!-- الطلبات العقارية -->
+      <div class="bg-white border rounded-xl p-6 text-center shadow-md hover:shadow-lg transition-all">
+        <h3 class="text-sm font-semibold text-gray-600">📦 إجمالي الطلبات العقارية</h3>
+        <p class="text-3xl font-bold text-green-700 mt-2">{{ stats.total_requests|default:"0" }}</p>
+      </div>
+
+      <!-- الصفقات المنفذة -->
+      <div class="bg-white border rounded-xl p-6 text-center shadow-md hover:shadow-lg transition-all">
+        <h3 class="text-sm font-semibold text-gray-600">📊 عدد الصفقات المنفذة</h3>
+        <p class="text-3xl font-bold text-blue-600 mt-2">{{ stats.total_executed|default:"0" }}</p>
+      </div>
+
+      <!-- إجمالي العمولات -->
+      <div class="bg-white border rounded-xl p-6 text-center shadow-md hover:shadow-lg transition-all">
+        <h3 class="text-sm font-semibold text-gray-600">💰 إجمالي العمولات</h3>
+        <p class="text-3xl font-bold text-yellow-600 mt-2">
+          {{ stats.total_commission|default:0|floatformat:"0" }} ريال
+        </p>
+      </div>
+
+      <!-- حصة المنصة -->
+      <div class="bg-white border rounded-xl p-6 text-center shadow-md hover:shadow-lg transition-all">
+        <h3 class="text-sm font-semibold text-gray-600">🏛️ حصة المنصة</h3>
+        <p class="text-3xl font-bold text-purple-700 mt-2">
+          {{ stats.platform_share|default:0|floatformat:"0" }} ريال
+        </p>
+      </div>
+    </div>
+
+
+      </div>
+    </div>
+
   </div>
-
-  <!-- عدد الطلبات الجديدة -->
-  <div class="bg-white shadow rounded-lg p-5">
-    <h3 class="text-sm text-gray-500">الطلبات الجديدة</h3>
-    <p class="text-3xl font-bold text-blue-600">{{ new_requests }}</p>
-  </div>
-
-  <!-- عدد العقارات -->
-  <div class="bg-white shadow rounded-lg p-5">
-    <h3 class="text-sm text-gray-500">إجمالي العقارات</h3>
-    <p class="text-3xl font-bold text-gray-800">{{ total_properties }}</p>
-  </div>
-
-  <!-- العقارات النشطة -->
-  <div class="bg-white shadow rounded-lg p-5">
-    <h3 class="text-sm text-gray-500">عقارات نشطة</h3>
-    <p class="text-3xl font-bold text-green-600">{{ active_properties }}</p>
-  </div>
-
-  <!-- العقارات المؤرشفة -->
-  <div class="bg-white shadow rounded-lg p-5">
-    <h3 class="text-sm text-gray-500">عقارات مؤرشفة</h3>
-    <p class="text-3xl font-bold text-red-500">{{ archived_properties }}</p>
-  </div>
-
 </div>
 {% endblock %}

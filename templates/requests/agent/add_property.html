@@ -1,0 +1,117 @@
+{% extends 'requests/agent/base_agent.html' %}
+{% block title %}إضافة عقار جديد{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow-lg space-y-6 mt-4">
+
+  <!-- ✅ العنوان -->
+  <h2 class="text-2xl font-bold text-green-700 flex items-center gap-2">
+    <i class="fas fa-plus-circle"></i> إضافة عقار للتسويق
+  </h2>
+
+  <!-- ✅ رسائل النجاح أو الخطأ -->
+  {% if messages %}
+    <div class="space-y-2">
+      {% for message in messages %}
+        <div class="p-4 rounded-md text-sm font-medium shadow-sm
+                    {% if message.tags == 'success' %}
+                      bg-green-100 text-green-800 border border-green-300
+                    {% elif message.tags == 'error' %}
+                      bg-red-100 text-red-800 border border-red-300
+                    {% else %}
+                      bg-gray-100 text-gray-800 border border-gray-300
+                    {% endif %}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- ✅ النموذج -->
+  <form method="POST" enctype="multipart/form-data" class="space-y-4">
+    {% csrf_token %}
+
+    {% for field in form %}
+      {% if field.name not in 'status created_by latitude longitude' %}
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1">{{ field.label }}</label>
+          {{ field }}
+          {% if field.help_text %}
+            <small class="text-gray-500">{{ field.help_text }}</small>
+          {% endif %}
+          {% for error in field.errors %}
+            <p class="text-red-500 text-sm mt-1">{{ error }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endfor %}
+
+    <!-- ✅ الخريطة -->
+    <div>
+      <label class="block text-sm font-semibold text-gray-700 mb-2">📍 حدد موقع العقار على الخريطة:</label>
+      <div id="map" class="w-full h-64 rounded-lg border border-gray-300 shadow-sm"></div>
+    </div>
+
+    <!-- ✅ الحقول المخفية -->
+    <input type="hidden" name="latitude" id="id_latitude">
+    <input type="hidden" name="longitude" id="id_longitude">
+
+    <!-- ✅ زر الحفظ -->
+    <div class="pt-4">
+      <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-all shadow-md">
+        💾 حفظ العقار
+      </button>
+    </div>
+  </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- ✅ Leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const defaultLat = 24.7136;
+    const defaultLng = 46.6753;
+
+    const map = L.map("map").setView([defaultLat, defaultLng], 12);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    let marker;
+
+    // ✅ تحديد الموقع تلقائيًا
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function (position) {
+        const userLat = position.coords.latitude.toFixed(6);
+        const userLng = position.coords.longitude.toFixed(6);
+
+        map.setView([userLat, userLng], 15);
+        marker = L.marker([userLat, userLng]).addTo(map);
+        document.getElementById("id_latitude").value = userLat;
+        document.getElementById("id_longitude").value = userLng;
+      }, function (error) {
+        console.warn("⚠️ لم يتم تحديد الموقع تلقائيًا:", error.message);
+      });
+    }
+
+    // ✅ النقر على الخريطة لتحديث الإحداثيات
+    map.on("click", function (e) {
+      const lat = e.latlng.lat.toFixed(6);
+      const lng = e.latlng.lng.toFixed(6);
+
+      if (marker) {
+        marker.setLatLng(e.latlng);
+      } else {
+        marker = L.marker(e.latlng).addTo(map);
+      }
+
+      document.getElementById("id_latitude").value = lat;
+      document.getElementById("id_longitude").value = lng;
+    });
+  });
+</script>
+{% endblock %}

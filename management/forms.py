@@ -72,3 +72,34 @@ class ScheduledMaintenanceForm(forms.ModelForm):
             'scheduled_date': 'تاريخ الصيانة',
             'description': 'ملاحظات إضافية',
         }
+
+class PropertyForm(forms.ModelForm):
+    class Meta:
+        model = Property
+        exclude = ['owner', 'is_approved', 'status']  # أو استخدم fields حسب الحاجة
+        labels = {
+            'name': 'اسم العقار',
+            'city': 'المدينة',
+            'district': 'الحي',
+            'type': 'نوع العقار',
+            'space': 'المساحة (م²)',
+            'price': 'السعر',
+            'contact_method': 'طريقة التواصل',
+            'license_number': 'رقم الترخيص',
+            'latitude': 'خط العرض',
+            'longitude': 'خط الطول',
+        }
+
+from .models import RentalInfo
+
+class RentalInfoForm(forms.ModelForm):
+    class Meta:
+        model = RentalInfo
+        fields = ['unit', 'start_date', 'end_date', 'amount', 'tenant_name']
+        labels = {
+            'unit': 'الوحدة',
+            'start_date': 'تاريخ البداية',
+            'end_date': 'تاريخ النهاية',
+            'amount': 'قيمة الإيجار',
+            'tenant_name': 'اسم المستأجر',
+        }

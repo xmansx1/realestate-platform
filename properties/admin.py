@@ -4,7 +4,7 @@ from .models import Property
 
 @admin.register(Property)
 class PropertyAdmin(admin.ModelAdmin):
-    list_display = ('title', 'price', 'location', 'status', 'created_at', 'created_by', 'image_preview')
+    list_display = ('title', 'price', 'status', 'created_at', 'created_by', 'image_preview')
     list_filter = ('status', 'created_at')
     search_fields = ('title', 'location', 'description')
     ordering = ('-created_at',)

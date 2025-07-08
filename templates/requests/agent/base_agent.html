@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}لوحة الوسيط العقاري{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Tajawal', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+  <!-- ✅ شريط التنقل -->
+  <nav class="bg-white shadow fixed top-0 w-full z-50">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <div class="text-xl font-bold text-green-700 flex items-center gap-2">
+        <i class="fa-solid fa-user-tie"></i>
+        لوحة الوسيط العقاري
+      </div>
+      <div class="flex items-center gap-6 text-sm">
+        <a href="{% url 'requests:agent_dashboard' %}" class="hover:text-green-600 transition">🏠 الرئيسية</a>
+        <a href="{% url 'requests:agent_available' %}" class="hover:text-green-600 transition">📋 الطلبات المتاحة</a>
+        <a href="{% url 'requests:agent_reserved' %}" class="hover:text-green-600 transition">📌 طلباتي</a>
+        <a href="{% url 'requests:agent_deals' %}" class="hover:text-green-600 transition">💼 صفقاتي</a>
+        <form method="POST" action="{% url 'logout' %}" class="inline">
+          {% csrf_token %}
+          <button type="submit" class="text-red-600 hover:underline">🚪 تسجيل الخروج</button>
+        </form>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ✅ محتوى الصفحة -->
+  <main class="max-w-7xl mx-auto px-4 py-24">  <!-- هام: py-24 لتعويض شريط التنقل الثابت -->
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- ✅ سكربتات إضافية (مثل Leaflet.js) -->
+  {% block extra_js %}{% endblock %}
+  
+</body>
+</html>

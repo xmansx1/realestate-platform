@@ -1,69 +1,83 @@
-{% extends 'base.html' %}
-{% block title %}تفاصيل العقار{% endblock %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>تفاصيل العقار</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body class="bg-gray-100 font-sans">
 
-{% block content %}
-<div class="max-w-5xl mx-auto bg-white shadow-lg p-6 rounded-2xl space-y-8">
+  <div class="max-w-5xl mx-auto bg-white shadow-lg p-6 rounded-2xl mt-10 space-y-8">
 
-  <!-- العنوان -->
-  <div class="border-b pb-4">
-    <h1 class="text-3xl font-bold text-green-700">{{ property.title }}</h1>
-    <p class="text-gray-500 mt-2">رقم الترخيص: {{ property.license_number }}</p>
-  </div>
-
-  <!-- الصورة -->
-  {% if property.image %}
-    <div>
-      <img src="{{ property.image.url }}" alt="صورة العقار" class="w-full h-96 object-cover rounded-xl border">
+    <!-- زر العودة -->
+    <div class="flex justify-end">
+      <a href="{% url 'properties:admin_list' %}" class="text-sm text-green-700 hover:underline flex items-center gap-1">
+        ← رجوع إلى لوحة التحكم
+      </a>
     </div>
-  {% endif %}
 
-  <!-- التفاصيل -->
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-700">
-    <div>
-      <p class="mb-2"><span class="font-semibold">💰 السعر:</span> {{ property.price }} ريال</p>
-      <p class="mb-2"><span class="font-semibold">📐 المساحة:</span> {{ property.area }} م²</p>
-      <p class="mb-2"><span class="font-semibold">📦 نوع العرض:</span> {{ property.get_property_type_display }}</p>
-      <p class="mb-2"><span class="font-semibold">📞 وسيلة التواصل:</span> {{ property.contact_info }}</p>
+    <!-- العنوان -->
+    <div class="border-b pb-4">
+      <h1 class="text-3xl font-bold text-green-700">{{ property.title }}</h1>
+      <p class="text-gray-500 mt-2">رقم الترخيص: {{ property.license_number }}</p>
     </div>
+
+    <!-- الصورة -->
+    {% if property.image %}
+      <div>
+        <img src="{{ property.image.url }}" alt="صورة العقار" class="w-full h-96 object-cover rounded-xl border">
+      </div>
+    {% endif %}
+
+    <!-- التفاصيل -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-700">
+      <div>
+        <p class="mb-2"><span class="font-semibold">💰 السعر:</span> {{ property.price }} ريال</p>
+        <p class="mb-2"><span class="font-semibold">📐 المساحة:</span> {{ property.area }} م²</p>
+        <p class="mb-2"><span class="font-semibold">📦 نوع العرض:</span> {{ property.get_property_type_display }}</p>
+        <p class="mb-2"><span class="font-semibold">📞 وسيلة التواصل:</span> {{ property.contact_info }}</p>
+      </div>
+      <div>
+        <p class="mb-2"><span class="font-semibold">🕵️‍♂️ الوسيط:</span> {{ property.created_by.full_name }}</p>
+        <p class="mb-2"><span class="font-semibold">🏙️ المدينة:</span> {{ property.city }}</p>
+        <p class="mb-2"><span class="font-semibold">📍 الحي:</span> {{ property.district }}</p>
+        <p class="mb-2"><span class="font-semibold">📅 تاريخ الإضافة:</span> {{ property.created_at|date:"Y-m-d H:i" }}</p>
+      </div>
+    </div>
+
+    <!-- الوصف -->
     <div>
-      <p class="mb-2"><span class="font-semibold">🕵️‍♂️ الوسيط:</span> {{ property.created_by.full_name }}</p>
-      <p class="mb-2"><span class="font-semibold">📍 الموقع النصي:</span> {{ property.location }}</p>
-      <p class="mb-2"><span class="font-semibold">📅 تاريخ الإضافة:</span> {{ property.created_at|date:"Y-m-d H:i" }}</p>
+      <h2 class="text-lg font-semibold text-gray-800 mb-2">📝 وصف العقار</h2>
+      <p class="text-gray-600 leading-relaxed whitespace-pre-line">{{ property.description }}</p>
+    </div>
+
+    <!-- الخريطة -->
+    <div>
+      <h2 class="text-lg font-semibold text-gray-800 mb-2">📍 الموقع على الخريطة</h2>
+      <div id="map" class="w-full h-64 rounded-md border shadow-sm"></div>
     </div>
   </div>
 
-  <!-- الوصف -->
-  <div>
-    <h2 class="text-lg font-semibold text-gray-800 mb-2">📝 وصف العقار</h2>
-    <p class="text-gray-600 leading-relaxed">{{ property.description }}</p>
-  </div>
+  <!-- خريطة Leaflet -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const lat = {{ property.latitude|default:24.7136 }};
+      const lng = {{ property.longitude|default:46.6753 }};
 
-  <!-- الخريطة -->
-  <div>
-    <h2 class="text-lg font-semibold text-gray-800 mb-2">📍 الموقع على الخريطة</h2>
-    <div id="map" class="w-full h-64 rounded-md border shadow-sm"></div>
-  </div>
+      const map = L.map('map').setView([lat, lng], 13);
 
-</div>
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(map);
 
-<!-- Leaflet.js -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+      L.marker([lat, lng]).addTo(map)
+        .bindPopup("موقع العقار")
+        .openPopup();
+    });
+  </script>
 
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const lat = {{ property.latitude|default:24.7136 }};
-    const lng = {{ property.longitude|default:46.6753 }};
-
-    const map = L.map('map').setView([lat, lng], 13);
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
-
-    L.marker([lat, lng]).addTo(map)
-      .bindPopup("موقع العقار")
-      .openPopup();
-  });
-</script>
-{% endblock %}
+</body>
+</html>

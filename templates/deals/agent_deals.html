@@ -1,0 +1,32 @@
+<!-- templates/deals/agent_deals.html -->
+{% extends 'accounts/base_agent.html' %}
+{% block title %}عمولاتي{% endblock %}
+
+{% block content %}
+<div class="bg-white p-6 rounded-xl shadow space-y-6">
+  <h1 class="text-2xl font-bold text-green-700">💼 صفقاتي المنفذة</h1>
+
+  <table class="w-full text-sm text-right border border-gray-200">
+    <thead class="bg-gray-100 text-gray-700 font-semibold">
+      <tr>
+        <th class="px-4 py-2 border">رقم الطلب</th>
+        <th class="px-4 py-2 border">العميل</th>
+        <th class="px-4 py-2 border">العمولة</th>
+        <th class="px-4 py-2 border">حصة المنصة</th>
+        <th class="px-4 py-2 border">تاريخ التنفيذ</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for deal in deals %}
+      <tr class="hover:bg-gray-50">
+        <td class="px-4 py-2 border">{{ deal.request.id }}</td>
+        <td class="px-4 py-2 border">{{ deal.request.client_name }}</td>
+        <td class="px-4 py-2 border">{{ deal.commission }} ريال</td>
+        <td class="px-4 py-2 border">{{ deal.platform_share }} ريال</td>
+        <td class="px-4 py-2 border">{{ deal.created_at|date:"Y-m-d H:i" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
